@@ -12,12 +12,49 @@ const Grid: React.FC<GridProps> = ({
   const [columnWidths, setColumnWidths] = useState<number[]>(
     Array(columns).fill(120)
   );
-  const [resizingCol, setResizingCol] = useState<number | null>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
 
-
-  console.log(columnWidths)
+  const resizingColumnIndex = useRef<number | null>(null);
+  const startX = useRef<number>(0);
+  const startWidth = useRef<number>(0);
   
+
+
+  const handleMouseDown = (index: number, e: React.MouseEvent) => {
+    resizingColumnIndex.current = index;
+    startX.current = e.clientX;
+    startWidth.current = columnWidths[index];
+
+      // Disable text selection when resizing
+  document.body.style.userSelect = "none";
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  // Perform resizing
+  const handleMouseMove = (e: MouseEvent) => {
+    if (resizingColumnIndex.current === null) return;
+
+    const index = resizingColumnIndex.current;
+    const newWidth = Math.max(50, startWidth.current + (e.clientX - startX.current));
+
+    setColumnWidths((prevWidths) => {
+      const newWidths = [...prevWidths];
+      newWidths[index] = newWidth;
+      return newWidths;
+    });
+  };
+
+  // Stop resizing
+  const handleMouseUp = () => {
+    resizingColumnIndex.current = null;
+      // Re-enable text selection after resizing
+  document.body.style.userSelect = "auto";
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
+
 
   return (
     <div className="grid-container">
@@ -29,9 +66,8 @@ const Grid: React.FC<GridProps> = ({
             <th key={colIdx} style={{ width }} className='header'>
               <div className='headerCell'>
               Column {colIdx + 1}
-              <div className="resizer"  />
+              <div className="resizer"  onMouseDown={(e) => handleMouseDown(colIdx, e)}/>
               </div>
-           
             </th>
           ))}
         </tr>
