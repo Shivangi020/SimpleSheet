@@ -27,8 +27,11 @@ const Grid: React.FC<GridProps> = ({
           <th className="crossHeader"></th> {/* Top-left corner empty */}
           {columnWidths.map((width, colIdx) => (
             <th key={colIdx} style={{ width }} className='header'>
+              <div className='headerCell'>
               Column {colIdx + 1}
               <div className="resizer"  />
+              </div>
+           
             </th>
           ))}
         </tr>

@@ -54,7 +54,21 @@ td{
   outline: 1px solid #d3d3d3;
   background-color: white; 
 }
+
+.resizer{
+  cursor: ew-resize;
+  width: 5px;
+  height: 100%;
+  position: absolute;
+    right: 0;
+    top: 0;
+}
 .cell{
   width: 100%;
   height: 100%;
+}
+
+.headerCell{
+  height: 100%;
+  position: relative;
 }
