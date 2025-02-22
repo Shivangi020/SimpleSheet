@@ -93,6 +93,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           value: newCells[key]?.value || "",
         }));
 
+      console.log(rows, "debug rows");
       // Sort rows based on column value (number or string)
       rows.sort((a, b) => {
         const valA = a.value;
@@ -108,16 +109,19 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           : String(valB).localeCompare(String(valA));
       });
 
+      console.log(rows, "debug sortedrows");
       // Create a new mapping of rows after sorting
       const rowMapping: { [oldRowId: number]: number } = {};
       rows.forEach(({ rowId }, newIndex) => {
         rowMapping[rowId] = newIndex; // Map old row index to new row index
       });
 
+      console.log(rowMapping, "debug rowsMapping");
       // Apply the row mapping to update cell positions
       const updatedCells: Record<string, Cell> = {};
       Object.keys(newCells).forEach((key) => {
         const [row, col] = key.split("-").map(Number);
+        console.log(row, col, "debug each");
         if (rowMapping[row] !== undefined) {
           const newKey = `${rowMapping[row]}-${col}`;
           updatedCells[newKey] = {
