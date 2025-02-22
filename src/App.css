@@ -110,6 +110,23 @@ td:hover {
   z-index: 4;
 }
 
+.toolbarCn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  margin-top: 1em;
+}
+.toolbar {
+  width: 50%;
+  height: 50px;
+  border-radius: 50px;
+  background-color: #e6f2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
 /* Custom scrollbar */
 .grid-container::-webkit-scrollbar {
   width: 8px; /* Width of the scrollbar */
