@@ -151,6 +151,16 @@ td:hover {
     rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
 }
 
+.activeCellData {
+  height: 38px;
+  outline: none;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  border-radius: 10px;
+  flex: 0.8;
+  background-color: #fff;
+}
+
 /* Custom scrollbar */
 .grid-container::-webkit-scrollbar {
   width: 8px; /* Width of the scrollbar */

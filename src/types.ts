@@ -4,17 +4,13 @@ export interface Cell {
   type: "text" | "number"; // Data type
 }
 
-export interface SortState {
-  direction: "asc" | "desc";
-}
-
 export interface GridState {
   cells: Record<string, Cell>; // Map of cell id to cell data
   selectedCells: string[]; // Array of selected cell ids
   activeCell: string | null; // Currently active cell id
   undoStack: GridAction[]; // Stack of actions for undo
   redoStack: GridAction[]; // Stack of actions for redo
-  sortState: SortState | null;
+  sortState: "asc" | "desc" | null;
 }
 
 export type GridAction =
@@ -24,6 +20,12 @@ export type GridAction =
         cellId: string;
         value: string | number;
         previousValue: string | number;
+      };
+    }
+  | {
+      type: "UPDATE_SORT_DIRECTION";
+      payload: {
+        direction: "asc" | "desc";
       };
     }
   | {

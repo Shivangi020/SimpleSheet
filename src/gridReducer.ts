@@ -8,7 +8,7 @@ export const initialState: GridState = {
   activeCell: null,
   undoStack: [],
   redoStack: [],
-  sortState: { direction: "asc" },
+  sortState: "asc",
 };
 
 export function gridReducer(state: GridState, action: GridAction): GridState {
@@ -59,6 +59,8 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "SET_SELECTED_CELLS":
       return { ...state, selectedCells: action.payload.cellIds };
 
+    case "UPDATE_SORT_DIRECTION":
+      return { ...state, sortState: action.payload.direction };
     case "UNDO": {
       if (state.undoStack.length === 0) return state;
       const lastAction = state.undoStack[state.undoStack.length - 1];

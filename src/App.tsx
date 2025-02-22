@@ -19,8 +19,8 @@ const App: React.FC = () => {
 
   const handleUndo = () => dispatch({ type: "UNDO" });
   const handleRedo = () => dispatch({ type: "REDO" });
-
-  console.log(state.undoStack, "lets check undo stack");
+  const handleSortDirection = (direction: "asc" | "desc") =>
+    dispatch({ type: "UPDATE_SORT_DIRECTION", payload: { direction } });
 
   return (
     <div>
@@ -29,7 +29,7 @@ const App: React.FC = () => {
         canUndo={state.undoStack.length > 0}
         onUndo={handleUndo}
         onRedo={handleRedo}
-        onSort={() => {}}
+        onSort={handleSortDirection}
       />
       <Grid
         rows={20}
