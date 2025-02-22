@@ -1,5 +1,7 @@
 import React from "react";
 import { ToolbarProps } from "../types";
+import { MdUndo } from "react-icons/md";
+import { MdRedo } from "react-icons/md";
 
 const Toolbar: React.FC<ToolbarProps> = ({
   canUndo,
@@ -17,9 +19,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
           style={{
             padding: "5px",
             cursor: canUndo ? "pointer" : "not-allowed",
+            color: canUndo ? " #007bff" : "#949494",
           }}
+          className="toolbarBtn"
         >
-          Undo
+          <MdUndo size={25} />
+          <span>Undo</span>
         </button>
         <button
           onClick={onRedo}
@@ -27,9 +32,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
           style={{
             padding: "5px",
             cursor: canRedo ? "pointer" : "not-allowed",
+            color: canRedo ? " #007bff" : "#949494",
           }}
+          className="toolbarBtn"
         >
-          Redo
+          <MdRedo size={25} />
+          <span>Redo</span>
         </button>
         <select
           onChange={(e) => onSort(e.target.value as "asc" | "desc")}

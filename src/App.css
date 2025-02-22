@@ -127,6 +127,18 @@ td:hover {
   justify-content: center;
   gap: 10px;
 }
+
+.toolbarBtn {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 0.8em;
+  font-weight: 600;
+  /* color: #007bff; */
+  border: none;
+}
 /* Custom scrollbar */
 .grid-container::-webkit-scrollbar {
   width: 8px; /* Width of the scrollbar */
