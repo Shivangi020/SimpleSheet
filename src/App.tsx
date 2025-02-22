@@ -1,22 +1,27 @@
 // App.tsx
-import React from 'react';
-import Grid from './components/Grid';
-import './App.css'
+import React from "react";
+import Grid from "./components/Grid";
+import "./App.css";
+import Toolbar from "./components/Toolbar";
 
 const App: React.FC = () => {
-
-
   const handleCellUpdate = (cellId: string, value: string | number) => {
-   // will implement cell update function
+    // will implement cell update function
   };
 
-  const handleSort = (columnId: string, direction: 'asc' | 'desc') => {
+  const handleSort = (columnId: string, direction: "asc" | "desc") => {
     // Implement sorting logic
   };
 
   return (
     <div>
-     
+      <Toolbar
+        canRedo={true}
+        canUndo={true}
+        onUndo={() => {}}
+        onRedo={() => {}}
+        onSort={() => {}}
+      />
       <Grid
         rows={20}
         columns={20}
@@ -27,4 +32,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App
+export default App;
