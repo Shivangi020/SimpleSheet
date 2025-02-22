@@ -89,8 +89,6 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           undoStack: state.undoStack.slice(0, -1), // Remove from undo stack
           redoStack: [...state.redoStack, lastAction], // Move to redo stack
         };
-      } else if (lastAction.type === "MULTI_UPDATE") {
-        console.log(lastAction.payload, "Multiupdate");
       } else if (lastAction.type === "AUTO_FILL") {
         const { updates } = lastAction.payload;
         const autoFilledCells = { ...state.cells };
@@ -100,10 +98,11 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
             value: previousValue,
           };
         });
-        console.log(autoFilledCells, "autoFilledCells");
+
         return {
           ...state,
           cells: autoFilledCells,
+          undoStack: state.undoStack.slice(0, -1),
           redoStack: [
             ...state.redoStack,
             lastAction, // Save action for redo
@@ -135,6 +134,21 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         return {
           ...state,
           cells: pastedCells, // Reapply paste
+          redoStack: state.redoStack.slice(0, -1), // Remove from redo stack
+          undoStack: [...state.undoStack, lastRedo], // Move back to undo stack
+        };
+      } else if (lastRedo.type === "AUTO_FILL") {
+        const { updates } = lastRedo.payload;
+        const autoFilledCells = { ...state.cells };
+        updates.forEach(({ cellId, value }) => {
+          autoFilledCells[cellId] = {
+            ...autoFilledCells[cellId],
+            value: value,
+          };
+        });
+        return {
+          ...state,
+          cells: autoFilledCells, // Reapply paste
           redoStack: state.redoStack.slice(0, -1), // Remove from redo stack
           undoStack: [...state.undoStack, lastRedo], // Move back to undo stack
         };
