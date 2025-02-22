@@ -28,7 +28,7 @@ td{
   border: 1px solid #d3d3d3;
 }
 
-.crossHeader{
+.emptyCorner{
   border: none;
   width: 50px;
   background: white;
@@ -71,4 +71,16 @@ td{
 .headerCell{
   height: 100%;
   position: relative;
+}
+
+
+.selectedCell{
+  background: #9fd3ff ;
+  border-color: #007bff ;
+  border: 1px solid #007bff;
+}
+
+td:hover {
+  background: #e0f2ff;
+  cursor: pointer;
 }

@@ -39,6 +39,11 @@ export type GridAction =
       };
     }
   | {
+      type: "SET_SELECTED_CELLS";
+      payload: { cellIds: string[] };
+    }
+  | { type: "SET_ACTIVE_CELL"; payload: { cellId: string } }
+  | {
       type: "UNDO" | "REDO";
     };
 

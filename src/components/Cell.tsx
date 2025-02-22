@@ -35,7 +35,7 @@ const CellComponent: React.FC<CellProps> = ({
         height:'100%'
       }}
     >
-      {isEditing ? (
+      {/* {isEditing ? (
         <input
           type={type}
           value={inputValue}
@@ -46,7 +46,9 @@ const CellComponent: React.FC<CellProps> = ({
         />
       ) : (
         value
-      )}
+      )} */}
+
+      {value}
     </div>
   );
 };
