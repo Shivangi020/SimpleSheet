@@ -41,7 +41,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         </button>
         <select
           onChange={(e) => onSort(e.target.value as "asc" | "desc")}
-          style={{ padding: "5px" }}
+          className="sortSelect"
         >
           <option value="" disabled selected>
             Sort

@@ -125,7 +125,7 @@ td:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
 }
 
 .toolbarBtn {
@@ -139,6 +139,18 @@ td:hover {
   /* color: #007bff; */
   border: none;
 }
+
+.sortSelect {
+  padding: 5px;
+  border: none;
+  border-radius: 10px;
+  background: aliceblue;
+  height: 38px;
+  outline: none;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+}
+
 /* Custom scrollbar */
 .grid-container::-webkit-scrollbar {
   width: 8px; /* Width of the scrollbar */
