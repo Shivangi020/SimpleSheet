@@ -43,6 +43,14 @@ export type GridAction =
       payload: { cellIds: string[] };
     }
   | { type: "SET_ACTIVE_CELL"; payload: { cellId: string } }
+  | { type: "COPY" }
+  | {
+      type: "PASTE";
+      payload: {
+        cellIds: string[];
+        values: string[][];
+      };
+    }
   | {
       type: "UNDO" | "REDO";
     };
