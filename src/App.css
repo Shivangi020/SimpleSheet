@@ -1,18 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 * {
   box-sizing: border-box;
+  font-family: "Poppins", serif;
 }
 #root {
-  /* max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem; */
   text-align: center;
+  height: 100vh;
+  width: 100vh;
 }
 
 .grid-container {
-  overflow: hidden;
   width: 100vw;
-  height: 100vh;
+  height: 80vh;
   overflow: scroll;
+  margin-top: 3em;
+  border: 1px solid #d3d3d3;
 }
 
 .grid {
@@ -53,6 +55,8 @@ td {
   top: 0;
   outline: 1px solid #d3d3d3;
   background-color: white;
+  z-index: 2;
+  height: 2em;
 }
 
 .resizer {
@@ -77,6 +81,11 @@ td {
 .headerCell {
   height: 100%;
   position: relative;
+  font-weight: 400;
+  font-size: 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .selectedCell {
@@ -99,4 +108,24 @@ td:hover {
   right: 0;
   bottom: 0;
   z-index: 4;
+}
+
+/* Custom scrollbar */
+.grid-container::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px;
+}
+
+.grid-container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the tracking area */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.grid-container::-webkit-scrollbar-thumb {
+  background: #b2b2b2; /* Color of the scroll thumb */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.grid-container::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the scroll thumb on hover */
 }
