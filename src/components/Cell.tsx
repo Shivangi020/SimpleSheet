@@ -47,7 +47,7 @@ const CellComponent: React.FC<CellProps> = ({
       className={`cell ${isSelected ? "selected" : ""} ${
         isActive ? "active" : ""
       }`}
-      onClick={() => setIsEditing(true)}
+      onDoubleClick={() => setIsEditing(true)}
       style={{
         // padding: "8px",
         // border: '1px solid #ddd',

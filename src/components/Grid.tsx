@@ -132,6 +132,14 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
 
   const handleCellChange = (cellId: string, newValue: string | number) => {
     if (!newValue) return;
+
+    console.log(
+      "am i being run when paste",
+      cells,
+      cellId,
+      newValue,
+      cells[cellId]?.value
+    );
     if (selectedCells.length > 1) {
       // Multi-update if multiple cells selected
       dispatch({

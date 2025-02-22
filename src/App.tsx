@@ -20,6 +20,8 @@ const App: React.FC = () => {
   const handleUndo = () => dispatch({ type: "UNDO" });
   const handleRedo = () => dispatch({ type: "REDO" });
 
+  console.log(state.undoStack, "lets check undo stack");
+
   return (
     <div>
       <Toolbar

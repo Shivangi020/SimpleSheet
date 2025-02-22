@@ -66,6 +66,15 @@ export type GridAction =
       };
     }
   | {
+      type: "COPYPASTE";
+
+      payload: {
+        cellIds: string[]; // The target cells where pasting happens
+        values: string[][]; // The copied values being pasted
+        previousValues: Record<string, { value: string | number }>; // Store old values for Undo
+      };
+    }
+  | {
       type: "UNDO" | "REDO";
     };
 

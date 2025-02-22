@@ -75,6 +75,23 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           undoStack: state.undoStack.slice(0, -1), // Remove last action
           redoStack: [...state.redoStack, lastAction], // Push to redo stack
         };
+      } else if (lastAction.type === "COPYPASTE") {
+        const { previousValues } = lastAction.payload;
+        const restoredCells = { ...state.cells };
+        Object.entries(previousValues).forEach(([cellId, data]) => {
+          restoredCells[cellId] = {
+            ...restoredCells[cellId],
+            value: data.value,
+          };
+        });
+        return {
+          ...state,
+          cells: restoredCells, // Restore previous values
+          undoStack: state.undoStack.slice(0, -1), // Remove from undo stack
+          redoStack: [...state.redoStack, lastAction], // Move to redo stack
+        };
+      } else if (lastAction.type === "MULTI_UPDATE") {
+        console.log(lastAction.payload, "Multiupdate");
       }
       return state;
     }
@@ -113,18 +130,42 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
       };
     case "PASTE":
       const pastedCells = { ...state.cells };
-      action.payload.cellIds.forEach((cellId, index) => {
-        const row = Math.floor(index / action.payload.values[0].length);
-        const col = index % action.payload.values[0].length;
-        const newValue = action.payload.values[row]?.[col] || "";
+      const copiedValues = action.payload.values; // Could be a 2D array or a single value
+      const cellIds = action.payload.cellIds;
 
-        pastedCells[cellId] = { ...pastedCells[cellId], value: newValue };
-      });
+      // Store previous values for undo
+      const previousValues: Record<string, { value: string | number }> = {};
+
+      if (copiedValues.length === 1 && copiedValues[0].length === 1) {
+        // Single cell copy -> Apply to all selected cells
+        const copiedValue = copiedValues[0][0];
+
+        cellIds.forEach((cellId) => {
+          previousValues[cellId] = { value: pastedCells[cellId]?.value || "" };
+          pastedCells[cellId] = { ...pastedCells[cellId], value: copiedValue };
+        });
+      } else {
+        // Multi-cell copy -> Structured pasting
+        cellIds.forEach((cellId, index) => {
+          const row = Math.floor(index / copiedValues[0].length);
+          const col = index % copiedValues[0].length;
+          const newValue = copiedValues[row]?.[col] || "";
+
+          previousValues[cellId] = { value: pastedCells[cellId]?.value || "" };
+          pastedCells[cellId] = { ...pastedCells[cellId], value: newValue };
+        });
+      }
 
       return {
         ...state,
         cells: pastedCells,
-        undoStack: [...state.undoStack, action],
+        undoStack: [
+          ...state.undoStack,
+          {
+            type: "COPYPASTE",
+            payload: { cellIds, values: copiedValues, previousValues },
+          }, // Save previous state for undo
+        ],
         redoStack: [],
       };
 
