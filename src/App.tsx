@@ -6,11 +6,13 @@ import Toolbar from "./components/Toolbar";
 
 const App: React.FC = () => {
   const handleCellUpdate = (cellId: string, value: string | number) => {
-    // will implement cell update function
+    // will implement cell update
+    console.log(cellId, value, "handleCellUpdate Function");
   };
 
   const handleSort = (columnId: string, direction: "asc" | "desc") => {
     // Implement sorting logic
+    console.log(columnId, direction, "handleSort");
   };
 
   return (

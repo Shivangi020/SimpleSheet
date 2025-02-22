@@ -23,6 +23,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartCell, setDragStartCell] = useState<string | null>(null);
   const [isAutoFill, setIsAutoFill] = useState(false);
+  const selectedCellsRef = useRef<string[]>(selectedCells);
 
   const handleMouseDown = (index: number, e: React.MouseEvent) => {
     resizingColumnIndex.current = index;
@@ -62,6 +63,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
+  // handles cell click
   const handleCellClick = (row: number, col: number, e: React.MouseEvent) => {
     const key = getCellKey(row, col);
 
@@ -94,11 +96,40 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
       });
     } else {
       dispatch({ type: "SET_SELECTED_CELLS", payload: { cellIds: [key] } });
+
+      dispatch({ type: "SET_ACTIVE_CELL", payload: { cellId: key } });
       startCell.current = { row, col };
     }
   };
 
+  const handleCopy = () => {
+    if (selectedCells.length === 0) return;
+
+    console.log(selectedCells, cells, activeCell, "copy paste 1");
+    const copiedData = selectedCells
+      .map((cellId) => cells[cellId]?.value || "")
+      .join("\t");
+
+    navigator.clipboard.writeText(copiedData);
+    dispatch({ type: "COPY" });
+  };
+
+  const handlePaste = async () => {
+    if (selectedCells.length === 0) return;
+
+    const clipboardText = await navigator.clipboard.readText();
+    const clipboardValues = clipboardText
+      .split("\n")
+      .map((row) => row.split("\t"));
+
+    dispatch({
+      type: "PASTE",
+      payload: { cellIds: selectedCells, values: clipboardValues },
+    });
+  };
+
   const handleCellChange = (cellId: string, newValue: string | number) => {
+    if (!newValue) return;
     if (selectedCells.length > 1) {
       // Multi-update if multiple cells selected
       dispatch({
@@ -124,55 +155,17 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
     }
   };
 
-  console.log({ selectedCells: selectedCells, cells: cells });
+  // When clicking on bottom right corner
+  // const handleMouseDownOnCorner = (cellId: string) => {
+  //   setIsDragging(true);
+  //   setDragStartCell(cellId);
+  //   setIsAutoFill(true);
+  //   document.body.style.userSelect = "none";
 
-  useEffect(() => {
-    const handleKeyDown = async (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "c") {
-        handleCopy();
-      }
-      if ((e.ctrlKey || e.metaKey) && e.key === "v") {
-        await handlePaste();
-      }
-    };
+  //   console.log("hello  ");
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [selectedCells]);
-
-  const handleCopy = () => {
-    if (selectedCells.length === 0) return;
-
-    const copiedData = selectedCells
-      .map((cellId) => cells[cellId]?.value || "")
-      .join("\t");
-
-    navigator.clipboard.writeText(copiedData);
-    dispatch({ type: "COPY" });
-  };
-
-  const handlePaste = async () => {
-    if (selectedCells.length === 0) return;
-
-    const clipboardText = await navigator.clipboard.readText();
-    const clipboardValues = clipboardText
-      .split("\n")
-      .map((row) => row.split("\t"));
-
-    dispatch({
-      type: "PASTE",
-      payload: { cellIds: selectedCells, values: clipboardValues },
-    });
-  };
-
-  const handleMouseDownOnCorner = (cellId: string) => {
-    console.log("atleaste mouse down");
-    setIsDragging(true);
-    setDragStartCell(cellId);
-    setIsAutoFill(true);
-    document.body.style.userSelect = "none";
-    document.addEventListener("mouseup", handleMouseUpFromCell);
-  };
+  //   document.addEventListener("mouseup", () => handleMouseUpFromCell(cellId));
+  // };
 
   const handleMouseOverOnCells = (cellId: string) => {
     if (!isDragging || !isAutoFill) return;
@@ -195,24 +188,74 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
       }
     }
 
-    console.log(selectedCells);
-
+    console.log(selectedCells, "selectedCells");
     dispatch({
       type: "SET_SELECTED_CELLS",
       payload: { cellIds: selectedCells },
     });
   };
 
-  const handleMouseUpFromCell = () => {
+  const handleMouseUpFromCell = (dragStartCellId: string) => {
     setIsDragging(false);
     setIsAutoFill(false);
+    document.body.style.userSelect = "auto";
+
+    console.log(
+      {
+        dragStartCellId,
+        selectedCells,
+        selectedCellsRef,
+        cells,
+        activeCell,
+      },
+      "all this in mouse up"
+    );
+    if (!dragStartCellId) return;
+    const updatedSelectedCells = selectedCellsRef.current; // Get the latest selectedCells
+
+    let fillValues: { [key: string]: string | number } = {};
+    updatedSelectedCells.forEach((cellId) => {
+      if (cells[dragStartCellId]) {
+        fillValues[cellId] = cells[dragStartCellId].value; // Copy-fill logic
+      }
+    });
+
+    console.log(fillValues, "fillValues after ");
+
+    dispatch({
+      type: "AUTO_FILL",
+      payload: {
+        updates: Object.entries(fillValues).map(([cellId, value]) => ({
+          cellId,
+          value,
+        })),
+      },
+    });
+
+    document.removeEventListener("mouseup", () => handleMouseUpFromCell(""));
+  };
+
+  const handleMouseDownOnCorner = (cellId: string) => {
+    setIsDragging(true);
+    setDragStartCell(cellId);
+    setIsAutoFill(true);
+    document.body.style.userSelect = "none";
+
+    console.log("hello");
+
+    const onMouseUp = () => handleMouseUpFromCell(cellId);
+
+    document.addEventListener("mouseup", onMouseUp);
+
+    // ✅ Properly remove listener after execution
+    document.addEventListener("mouseup", function removeListener() {
+      document.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("mouseup", removeListener); // Remove itself
+    });
   };
 
   const handleSort = (colIdx: number) => {
     const newDirection = "asc";
-
-    console.log(colIdx);
-    // setSortState({ ...sortState, [colIdx]: newDirection });
 
     const columnId = `${colIdx}`;
     dispatch({
@@ -221,7 +264,25 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
     });
   };
 
-  console.log(cells, "cells are updated");
+  useEffect(() => {
+    selectedCellsRef.current = selectedCells;
+  }, [selectedCells]);
+
+  // UseEffect runs for handle copy and paste
+  useEffect(() => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "c") {
+        handleCopy();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "v") {
+        await handlePaste();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [selectedCells]);
+
   return (
     <div className="grid-container">
       <table className="grid">
@@ -271,7 +332,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
                       value={cells[key]?.value || ""}
                       type={cells[key]?.type || "text"}
                       isSelected={selectedCells.includes(key)}
-                      isActive={false}
+                      isActive={activeCell === key}
                       onChange={(value) => handleCellChange(key, value)}
                     />
 

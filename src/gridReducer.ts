@@ -7,6 +7,7 @@ export const initialState: GridState = {
   activeCell: null,
   undoStack: [],
   redoStack: [],
+  sortState: { direction: "asc" },
 };
 
 export function gridReducer(state: GridState, action: GridAction): GridState {
@@ -20,6 +21,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         return state;
       }
 
+      console.log("updating single cell");
       return {
         ...state,
         cells: {
@@ -62,6 +64,16 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "COPY":
       return state;
 
+    case "AUTO_FILL":
+      const newCells = { ...state.cells };
+      action.payload.updates.forEach(({ cellId, value }) => {
+        newCells[cellId] = { ...newCells[cellId], value };
+      });
+
+      return {
+        ...state,
+        cells: newCells,
+      };
     case "PASTE":
       const pastedCells = { ...state.cells };
       action.payload.cellIds.forEach((cellId, index) => {
