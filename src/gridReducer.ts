@@ -111,7 +111,13 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           redoStack: state.redoStack.slice(0, -1), // Remove last redo action
           undoStack: [...state.undoStack, lastRedo], // Push back to undo stack
         };
+      } else if (lastRedo.type === "COPYPASTE") {
+        // const { cellIds, values } = lastRedo.payload;
+        // const redoCells = { ...state.cells };
+
+        console.log(lastRedo.payload, "last redo in case copyPaste");
       }
+
       return state;
     }
 
