@@ -1,5 +1,6 @@
 // gridReducer.ts
 import { Cell, GridState, GridAction } from "./types";
+import { applyPaste } from "./utils";
 
 export const initialState: GridState = {
   cells: {},
@@ -112,10 +113,15 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           undoStack: [...state.undoStack, lastRedo], // Push back to undo stack
         };
       } else if (lastRedo.type === "COPYPASTE") {
-        // const { cellIds, values } = lastRedo.payload;
-        // const redoCells = { ...state.cells };
+        const { cellIds, values } = lastRedo.payload;
 
-        console.log(lastRedo.payload, "last redo in case copyPaste");
+        const { pastedCells } = applyPaste(values, cellIds, state.cells);
+        return {
+          ...state,
+          cells: pastedCells, // Reapply paste
+          redoStack: state.redoStack.slice(0, -1), // Remove from redo stack
+          undoStack: [...state.undoStack, lastRedo], // Move back to undo stack
+        };
       }
 
       return state;
@@ -135,32 +141,14 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         cells: newCells,
       };
     case "PASTE":
-      const pastedCells = { ...state.cells };
       const copiedValues = action.payload.values; // Could be a 2D array or a single value
       const cellIds = action.payload.cellIds;
 
-      // Store previous values for undo
-      const previousValues: Record<string, { value: string | number }> = {};
-
-      if (copiedValues.length === 1 && copiedValues[0].length === 1) {
-        // Single cell copy -> Apply to all selected cells
-        const copiedValue = copiedValues[0][0];
-
-        cellIds.forEach((cellId) => {
-          previousValues[cellId] = { value: pastedCells[cellId]?.value || "" };
-          pastedCells[cellId] = { ...pastedCells[cellId], value: copiedValue };
-        });
-      } else {
-        // Multi-cell copy -> Structured pasting
-        cellIds.forEach((cellId, index) => {
-          const row = Math.floor(index / copiedValues[0].length);
-          const col = index % copiedValues[0].length;
-          const newValue = copiedValues[row]?.[col] || "";
-
-          previousValues[cellId] = { value: pastedCells[cellId]?.value || "" };
-          pastedCells[cellId] = { ...pastedCells[cellId], value: newValue };
-        });
-      }
+      const { pastedCells, previousValues } = applyPaste(
+        copiedValues,
+        cellIds,
+        state.cells
+      );
 
       return {
         ...state,
