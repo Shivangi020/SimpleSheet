@@ -14,6 +14,14 @@ const CellComponent: React.FC<CellProps> = ({
   const [inputValue, setInputValue] = useState(value);
 
   useEffect(() => {
+    if (value) {
+      console.log("why not updated", id, value, inputValue);
+    }
+    setInputValue(value);
+  }, [value]);
+
+  // console.log("why not updated", id, value, inputValue);
+  useEffect(() => {
     if (!isActive) setIsEditing(false);
   }, [isActive]);
 

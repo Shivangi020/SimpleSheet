@@ -221,6 +221,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
     });
   };
 
+  console.log(cells, "cells are updated");
   return (
     <div className="grid-container">
       <table className="grid">
@@ -230,7 +231,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
             {columnWidths.map((width, colIdx) => (
               <th key={colIdx} style={{ width }} className="header">
                 <div className="headerCell">
-                  Column {colIdx + 1}{" "}
+                  Column {colIdx}{" "}
                   <span
                     onClick={() => {
                       handleSort(colIdx);
@@ -250,9 +251,10 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
         <tbody>
           {Array.from({ length: rows }).map((_, rowIdx) => (
             <tr key={rowIdx}>
-              <td className="sticky-col">{rowIdx + 1}</td>
+              <td className="sticky-col">{rowIdx}</td>
               {Array.from({ length: columns }).map((_, colIdx) => {
                 const key = getCellKey(rowIdx, colIdx);
+
                 return (
                   <td
                     onClick={(e) => {
