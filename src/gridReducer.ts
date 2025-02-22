@@ -13,7 +13,7 @@ export const initialState: GridState = {
 export function gridReducer(state: GridState, action: GridAction): GridState {
   switch (action.type) {
     case "UPDATE_CELL":
-      const { cellId, value, previousValue } = action.payload;
+      const { cellId, value } = action.payload;
       const cellType = state.cells[cellId]?.type;
 
       // Prevent invalid data entry in number-only cells

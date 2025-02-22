@@ -1,11 +1,10 @@
 // Grid.tsx
-import React, { useState, useRef, useEffect, useReducer } from "react";
-import { Cell, GridProps } from "../types";
-import CellComponent from "./Cell";
-import { gridReducer, initialState } from "../gridReducer";
+import React, { useEffect, useRef, useState } from "react";
 import { useGrid } from "../ GridContext";
+import { GridProps } from "../types";
+import CellComponent from "./Cell";
 
-const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
+const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   // const [state, dispatch] = useReducer(gridReducer, initialState);
   const { state, dispatch } = useGrid();
   const { selectedCells, cells, activeCell } = state;

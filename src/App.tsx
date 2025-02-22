@@ -3,7 +3,7 @@ import React from "react";
 import Grid from "./components/Grid";
 import "./App.css";
 import Toolbar from "./components/Toolbar";
-import { GridProvider, useGrid } from "./ GridContext";
+import { useGrid } from "./ GridContext";
 
 const App: React.FC = () => {
   const { state, dispatch } = useGrid();
