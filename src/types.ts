@@ -49,6 +49,7 @@ export type GridAction =
         updates: Array<{
           cellId: string;
           value: string | number;
+          previousValue: string | number;
         }>;
       };
     }

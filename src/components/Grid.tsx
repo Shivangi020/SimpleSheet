@@ -237,6 +237,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
         updates: Object.entries(fillValues).map(([cellId, value]) => ({
           cellId,
           value,
+          previousValue: cells[cellId]?.value || "",
         })),
       },
     });

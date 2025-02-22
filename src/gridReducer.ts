@@ -61,9 +61,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
 
     case "UNDO": {
       if (state.undoStack.length === 0) return state;
-
       const lastAction = state.undoStack[state.undoStack.length - 1];
-      console.log(lastAction, "undo debug65");
       if (lastAction.type === "UPDATE_CELL") {
         const { cellId, previousValue } = lastAction.payload;
         console.log(cellId, previousValue, "undo debug 68");
@@ -93,6 +91,24 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         };
       } else if (lastAction.type === "MULTI_UPDATE") {
         console.log(lastAction.payload, "Multiupdate");
+      } else if (lastAction.type === "AUTO_FILL") {
+        const { updates } = lastAction.payload;
+        const autoFilledCells = { ...state.cells };
+        updates.forEach(({ cellId, previousValue }) => {
+          autoFilledCells[cellId] = {
+            ...autoFilledCells[cellId],
+            value: previousValue,
+          };
+        });
+        console.log(autoFilledCells, "autoFilledCells");
+        return {
+          ...state,
+          cells: autoFilledCells,
+          redoStack: [
+            ...state.redoStack,
+            lastAction, // Save action for redo
+          ],
+        };
       }
       return state;
     }
@@ -139,7 +155,9 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
       return {
         ...state,
         cells: newCells,
+        undoStack: [...state.undoStack, action],
       };
+
     case "PASTE":
       const copiedValues = action.payload.values; // Could be a 2D array or a single value
       const cellIds = action.payload.cellIds;
