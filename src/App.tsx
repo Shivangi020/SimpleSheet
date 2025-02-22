@@ -3,8 +3,10 @@ import React from "react";
 import Grid from "./components/Grid";
 import "./App.css";
 import Toolbar from "./components/Toolbar";
+import { GridProvider, useGrid } from "./ GridContext";
 
 const App: React.FC = () => {
+  const { state, dispatch } = useGrid();
   const handleCellUpdate = (cellId: string, value: string | number) => {
     // will implement cell update
     console.log(cellId, value, "handleCellUpdate Function");
@@ -15,13 +17,16 @@ const App: React.FC = () => {
     console.log(columnId, direction, "handleSort");
   };
 
+  const handleUndo = () => dispatch({ type: "UNDO" });
+  const handleRedo = () => dispatch({ type: "REDO" });
+
   return (
     <div>
       <Toolbar
-        canRedo={true}
-        canUndo={true}
-        onUndo={() => {}}
-        onRedo={() => {}}
+        canRedo={state.redoStack.length > 0}
+        canUndo={state.undoStack.length > 0}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
         onSort={() => {}}
       />
       <Grid

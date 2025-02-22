@@ -3,9 +3,11 @@ import React, { useState, useRef, useEffect, useReducer } from "react";
 import { Cell, GridProps } from "../types";
 import CellComponent from "./Cell";
 import { gridReducer, initialState } from "../gridReducer";
+import { useGrid } from "../ GridContext";
 
 const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
-  const [state, dispatch] = useReducer(gridReducer, initialState);
+  // const [state, dispatch] = useReducer(gridReducer, initialState);
+  const { state, dispatch } = useGrid();
   const { selectedCells, cells, activeCell } = state;
 
   const [columnWidths, setColumnWidths] = useState<number[]>(

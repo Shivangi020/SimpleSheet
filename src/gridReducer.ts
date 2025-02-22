@@ -57,9 +57,46 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
 
     case "SET_SELECTED_CELLS":
       return { ...state, selectedCells: action.payload.cellIds };
-    case "UNDO":
-    // Implement undo logic
-    case "REDO":
+
+    case "UNDO": {
+      if (state.undoStack.length === 0) return state;
+
+      const lastAction = state.undoStack[state.undoStack.length - 1];
+      console.log(lastAction, "undo debug65");
+      if (lastAction.type === "UPDATE_CELL") {
+        const { cellId, previousValue } = lastAction.payload;
+        console.log(cellId, previousValue, "undo debug 68");
+        return {
+          ...state,
+          cells: {
+            ...state.cells,
+            [cellId]: { ...state.cells[cellId], value: previousValue },
+          },
+          undoStack: state.undoStack.slice(0, -1), // Remove last action
+          redoStack: [...state.redoStack, lastAction], // Push to redo stack
+        };
+      }
+      return state;
+    }
+
+    case "REDO": {
+      if (state.redoStack.length === 0) return state;
+
+      const lastRedo = state.redoStack[state.redoStack.length - 1];
+      if (lastRedo.type === "UPDATE_CELL") {
+        const { cellId, value } = lastRedo.payload;
+        return {
+          ...state,
+          cells: {
+            ...state.cells,
+            [cellId]: { ...state.cells[cellId], value },
+          },
+          redoStack: state.redoStack.slice(0, -1), // Remove last redo action
+          undoStack: [...state.undoStack, lastRedo], // Push back to undo stack
+        };
+      }
+      return state;
+    }
 
     case "COPY":
       return state;
