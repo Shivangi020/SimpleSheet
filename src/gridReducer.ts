@@ -78,7 +78,60 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         undoStack: [...state.undoStack, action],
         redoStack: [],
       };
-    // Implement redo logic
+
+    case "SORT_COLUMN": {
+      const { columnId, direction } = action.payload;
+      const newCells = { ...state.cells };
+
+      console.log(columnId, "debug columnId");
+      // Extract rows with column values
+      const rows = Object.keys(newCells)
+        .filter((key) => key.endsWith(`-${columnId}`)) // Find cells in the sorted column
+        .map((key) => ({
+          key,
+          rowId: parseInt(key.split("-")[0]), // Extract row index
+          value: newCells[key]?.value || "",
+        }));
+
+      // Sort rows based on column value (number or string)
+      rows.sort((a, b) => {
+        const valA = a.value;
+        const valB = b.value;
+
+        if (!isNaN(Number(valA)) && !isNaN(Number(valB))) {
+          return direction === "asc"
+            ? Number(valA) - Number(valB)
+            : Number(valB) - Number(valA);
+        }
+        return direction === "asc"
+          ? String(valA).localeCompare(String(valB))
+          : String(valB).localeCompare(String(valA));
+      });
+
+      // Create a new mapping of rows after sorting
+      const rowMapping: { [oldRowId: number]: number } = {};
+      rows.forEach(({ rowId }, newIndex) => {
+        rowMapping[rowId] = newIndex; // Map old row index to new row index
+      });
+
+      // Apply the row mapping to update cell positions
+      const updatedCells: Record<string, Cell> = {};
+      Object.keys(newCells).forEach((key) => {
+        const [row, col] = key.split("-").map(Number);
+        if (rowMapping[row] !== undefined) {
+          const newKey = `${rowMapping[row]}-${col}`;
+          updatedCells[newKey] = {
+            ...newCells[key], // Preserve all cell properties
+            id: newKey, // Update the ID to reflect the new row index
+          };
+        } else {
+          updatedCells[key] = newCells[key]; // Preserve other cells
+        }
+      });
+
+      return { ...state, cells: updatedCells };
+    }
+
     default:
       return state;
   }

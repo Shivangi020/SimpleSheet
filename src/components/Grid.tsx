@@ -208,6 +208,19 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
     setIsAutoFill(false);
   };
 
+  const handleSort = (colIdx: number) => {
+    const newDirection = "asc";
+
+    console.log(colIdx);
+    // setSortState({ ...sortState, [colIdx]: newDirection });
+
+    const columnId = `${colIdx}`;
+    dispatch({
+      type: "SORT_COLUMN",
+      payload: { columnId: columnId, direction: newDirection },
+    });
+  };
+
   return (
     <div className="grid-container">
       <table className="grid">
@@ -217,7 +230,14 @@ const Grid: React.FC<GridProps> = ({ rows, columns, onCellUpdate, onSort }) => {
             {columnWidths.map((width, colIdx) => (
               <th key={colIdx} style={{ width }} className="header">
                 <div className="headerCell">
-                  Column {colIdx + 1}
+                  Column {colIdx + 1}{" "}
+                  <span
+                    onClick={() => {
+                      handleSort(colIdx);
+                    }}
+                  >
+                    🔼
+                  </span>
                   <div
                     className="resizer"
                     onMouseDown={(e) => handleMouseDown(colIdx, e)}
