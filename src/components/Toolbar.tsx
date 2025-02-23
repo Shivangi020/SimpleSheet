@@ -5,6 +5,7 @@ import { MdRedo } from "react-icons/md";
 import { AiOutlineSortAscending } from "react-icons/ai";
 import { AiOutlineSortDescending } from "react-icons/ai";
 import { useGrid } from "../ GridContext";
+import { parseCellKey } from "../utils";
 
 const Toolbar: React.FC<ToolbarProps> = ({
   canUndo,
@@ -14,6 +15,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onSort,
 }) => {
   const { state } = useGrid();
+  const { activeCell, cells } = state;
 
   console.log(state);
   return (
@@ -66,7 +68,18 @@ const Toolbar: React.FC<ToolbarProps> = ({
           </div>
         </div>
 
-        <div className="activeCellData">some data inside it</div>
+        <div className="activeCellData">
+          {activeCell ? (
+            <>
+              <span>{`Row-${parseCellKey(activeCell)?.row}`}</span>
+              <span>{`Col-${parseCellKey(activeCell)?.col}`}</span>
+              <hr className="verticalDivider" />
+              <span className="value">{cells[activeCell]?.value || ""}</span>
+            </>
+          ) : (
+            <div className="placeholder">Selected cell</div>
+          )}
+        </div>
       </div>
     </div>
   );

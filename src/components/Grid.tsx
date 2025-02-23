@@ -3,8 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useGrid } from "../ GridContext";
 import { GridProps } from "../types";
 import CellComponent from "./Cell";
-import { AiOutlineSortAscending } from "react-icons/ai";
-import { AiOutlineSortDescending } from "react-icons/ai";
+import { TiArrowSortedDown } from "react-icons/ti";
+import { TiArrowSortedUp } from "react-icons/ti";
 
 const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   // const [state, dispatch] = useReducer(gridReducer, initialState);
@@ -310,7 +310,11 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
                   }}
                 >
                   <span>Column {colIdx}</span>
-
+                  {state.sortState === "asc" ? (
+                    <TiArrowSortedDown size={18} />
+                  ) : (
+                    <TiArrowSortedUp size={18} />
+                  )}
                   <div
                     className="resizer"
                     onMouseDown={(e) => handleMouseDown(colIdx, e)}

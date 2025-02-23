@@ -92,3 +92,13 @@ export const sortAndMapRows = (
 
   return sortedCells;
 };
+
+export const getCellKey = (row: number, col: number) => `${row}-${col}`;
+
+export const parseCellKey = (
+  cellKey: string | null
+): { row: number; col: number } | null => {
+  if (!cellKey) return null;
+  const [row, col] = cellKey.split("-").map(Number);
+  return { row, col };
+};

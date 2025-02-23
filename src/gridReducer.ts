@@ -114,7 +114,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         return {
           ...state,
           cells: cellsCopy,
-          sortState: direction === "asc" ? "desc" : "asc",
+          sortState: direction,
           undoStack: state.undoStack.slice(0, -1),
           redoStack: [
             ...state.redoStack,
