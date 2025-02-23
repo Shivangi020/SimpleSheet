@@ -89,9 +89,9 @@ td {
 }
 
 .selectedCell {
-  background: #9fd3ff;
-  border-color: #007bff;
-  border: 1px solid #007bff;
+  /* background: #9fd3ff; */
+  outline: 2px solid #007bff;
+  border-radius: 2px;
 }
 
 td:hover {
