@@ -16,8 +16,6 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "UPDATE_CELL":
       const { cellId, value } = action.payload;
       const cellType = state.cells[cellId]?.type;
-
-      // Prevent invalid data entry in number-only cells
       if (cellType === "number" && isNaN(Number(value))) {
         return state;
       }
@@ -33,14 +31,11 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
 
     case "MULTI_UPDATE":
       const updatedCells = { ...state.cells };
-
       action.payload.updates.forEach(({ cellId, value }) => {
         const cellType = updatedCells[cellId]?.type;
-
         if (cellType === "number" && isNaN(Number(value))) {
-          return; // Skip invalid input
+          return;
         }
-
         updatedCells[cellId] = { ...updatedCells[cellId], value };
       });
 
@@ -123,7 +118,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
             {
               ...lastAction,
               payload: { ...lastAction.payload, cellsCopy: sortedCellsForRedo },
-            }, // Save action for redo
+            },
           ],
         };
       }
@@ -132,9 +127,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
 
     case "REDO": {
       if (state.redoStack.length === 0) return state;
-
       const lastRedo = state.redoStack[state.redoStack.length - 1];
-
       if (lastRedo.type === "UPDATE_CELL") {
         const { cellId, value } = lastRedo.payload;
         return {
@@ -167,24 +160,24 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         });
         return {
           ...state,
-          cells: autoFilledCells, // Reapply paste
-          redoStack: state.redoStack.slice(0, -1), // Remove from redo stack
-          undoStack: [...state.undoStack, lastRedo], // Move back to undo stack
+          cells: autoFilledCells,
+          redoStack: state.redoStack.slice(0, -1),
+          undoStack: [...state.undoStack, lastRedo],
         };
       } else if (lastRedo.type === "SORT_COLUMN") {
         const { cellsCopy } = lastRedo.payload;
         const cellCopyForUndo = { ...state.cells };
         return {
           ...state,
-          cells: cellsCopy, // Reapply paste
-          redoStack: state.redoStack.slice(0, -1), // Remove from redo stack
+          cells: cellsCopy,
+          redoStack: state.redoStack.slice(0, -1),
           undoStack: [
             ...state.undoStack,
             {
               ...lastRedo,
               payload: { ...lastRedo.payload, cellsCopy: cellCopyForUndo },
             },
-          ], // Move back to undo stack
+          ],
         };
       }
 
@@ -222,9 +215,9 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         undoStack: [
           ...state.undoStack,
           {
-            type: "COPYPASTE",
+            type: "COPYPASTE", // action only to undo or redo paste action (as required previous state)
             payload: { cellIds, values: copiedValues, previousValues },
-          }, // Save previous state for undo
+          },
         ],
         redoStack: [],
       };
