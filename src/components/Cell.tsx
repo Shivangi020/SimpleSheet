@@ -1,6 +1,7 @@
 // Cell.tsx
 import React, { useState, useEffect } from "react";
 import { CellProps } from "../types";
+import { actionKeys } from "../utils";
 
 const CellComponent: React.FC<CellProps> = ({
   id,
@@ -45,23 +46,10 @@ const CellComponent: React.FC<CellProps> = ({
     }
   };
 
+  // This function listens for key presses on the parent <div> and enables editing mode (isEditing = true)
+  // when users start typing, eliminating the need for a double-click to enter editing mode.
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const actionKeys = [
-      "Enter",
-      "Shift",
-      "Control",
-      "Alt",
-      "Meta",
-      "ArrowUp",
-      "ArrowDown",
-      "ArrowLeft",
-      "ArrowRight",
-      "Escape",
-      "Meta",
-    ];
-
     if (!actionKeys.includes(e.key)) {
-      console.log("not active", actionKeys);
       setIsEditing(true);
     }
   };
@@ -77,6 +65,7 @@ const CellComponent: React.FC<CellProps> = ({
         backgroundColor: isSelected ? "#e3f2fd" : "white",
       }}
       tabIndex={0}
+      id={id}
     >
       {isEditing ? (
         <input

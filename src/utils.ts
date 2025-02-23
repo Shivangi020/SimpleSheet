@@ -1,5 +1,39 @@
 import { Cell } from "./types";
 
+export const actionKeys = [
+  "Enter",
+  "Shift",
+  "Control",
+  "Alt",
+  "Meta",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "Escape",
+  "CapsLock",
+  "Tab",
+  "Backspace",
+  "Delete",
+  "Insert",
+  "PageUp",
+  "PageDown",
+  "Home",
+  "End",
+  "F1",
+  "F2",
+  "F3",
+  "F4",
+  "F5",
+  "F6",
+  "F7",
+  "F8",
+  "F9",
+  "F10",
+  "F11",
+  "F12", // Function keys
+];
+
 export const applyPaste = (
   copiedValues: string[][],
   cellIds: string[],
