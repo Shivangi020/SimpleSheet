@@ -50,26 +50,12 @@ pnpm build
 
 The optimized build will be in the `dist/` folder.
 
-## Preview Production Build
-
-To serve the built files:
-```sh
-npm run preview
-```
-
-## Linting & Formatting
-
-```sh
-npm run lint   # Lint code
-npm run format # Format code
-```
-
 ## Dependencies
 
 - React
 - Vite
 - TypeScript
-- (Optional) Tailwind CSS
+- React-icons
 
 ## License
 
