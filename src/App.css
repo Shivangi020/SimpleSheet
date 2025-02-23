@@ -9,6 +9,7 @@
   width: 100vh;
 }
 
+/* Grid CSS starts from here ---------------------------------------> */
 .grid-container {
   width: 100vw;
   height: 80vh;
@@ -28,6 +29,10 @@
 td {
   border: 1px solid #d3d3d3;
   position: relative;
+}
+td:hover {
+  background: #e0f2ff;
+  cursor: pointer;
 }
 
 .emptyCorner {
@@ -59,6 +64,16 @@ td {
   height: 2em;
 }
 
+.headerCell {
+  height: 100%;
+  position: relative;
+  font-weight: 600;
+  font-size: 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .resizer {
   cursor: ew-resize;
   width: 5px;
@@ -78,25 +93,10 @@ td {
   outline: none;
   border: 0;
 }
-.headerCell {
-  height: 100%;
-  position: relative;
-  font-weight: 600;
-  font-size: 0.8em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .selectedCell {
-  /* background: #9fd3ff; */
   outline: 1px solid #007bff;
   border-radius: 2px;
-}
-
-td:hover {
-  background: #e0f2ff;
-  cursor: pointer;
 }
 
 .cornorSelect {
@@ -104,12 +104,12 @@ td:hover {
   width: 10px;
   height: 10px;
   cursor: crosshair;
-  /* background-color: red; */
   right: 0;
   bottom: 0;
   z-index: 4;
 }
 
+/* Toolbar CSS Starts from here -----------------------------> */
 .toolbarCn {
   display: flex;
   align-items: center;
@@ -136,24 +136,18 @@ td:hover {
   flex-direction: column;
   font-size: 0.8em;
   font-weight: 600;
-  /* color: #007bff; */
   border: none;
 }
 
 .sortSelect {
-  /* padding: 12px; */
   border: none;
   border-radius: 10px;
-  /* background: aliceblue; */
-  /* height: 38px; */
   outline: none;
   display: flex;
   gap: 1em;
 }
 
 .sortBtn {
-  /* box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
-    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px; */
   display: flex;
   flex-direction: column;
   font-size: 0.8em;
@@ -176,7 +170,6 @@ td:hover {
 .activeCellData {
   height: 38px;
   outline: none;
-
   border-radius: 10px;
   flex: 0.8;
   display: flex;
@@ -211,22 +204,22 @@ td:hover {
   margin-right: 10px;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar starts from here------------------------> */
 .grid-container::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
+  width: 8px;
   height: 8px;
 }
 
 .grid-container::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Color of the tracking area */
-  border-radius: 10px; /* Rounded corners */
+  background: #f1f1f1;
+  border-radius: 10px;
 }
 
 .grid-container::-webkit-scrollbar-thumb {
-  background: #b2b2b2; /* Color of the scroll thumb */
-  border-radius: 10px; /* Rounded corners */
+  background: #b2b2b2;
+  border-radius: 10px;
 }
 
 .grid-container::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Color of the scroll thumb on hover */
+  background: #555;
 }
