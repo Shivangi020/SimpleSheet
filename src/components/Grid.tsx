@@ -84,7 +84,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   // Function for handling Cell click with single Click , Shift + click , Ctrl/Cmd + click
   const handleCellClick = (row: number, col: number, e: React.MouseEvent) => {
     const key = getCellKey(row, col);
-
     if (e.shiftKey && startCell.current) {
       const newSelection: string[] = [];
       for (
@@ -114,22 +113,19 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
       });
     } else {
       dispatch({ type: "SET_SELECTED_CELLS", payload: { cellIds: [key] } });
-
       dispatch({ type: "SET_ACTIVE_CELL", payload: { cellId: key } });
       startCell.current = { row, col };
     }
   };
 
   const handleCellChange = (cellId: string, newValue: string | number) => {
-    if (!newValue) return;
-
-    console.log(
-      "am i being run when paste",
+    console.log("handle Change", {
       cells,
       cellId,
       newValue,
-      cells[cellId]?.value
-    );
+      value: cells[cellId]?.value,
+      activeCell,
+    });
     if (selectedCells.length > 1) {
       // Multi-update if multiple cells selected
       dispatch({

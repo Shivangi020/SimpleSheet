@@ -42,6 +42,14 @@ const CellComponent: React.FC<CellProps> = ({
     setIsEditing(false);
   };
 
+  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onChange(inputValue);
+      setIsEditing(false);
+    }
+  };
+
   return (
     <div
       className={`cell ${isSelected ? "selected" : ""} ${
@@ -49,11 +57,7 @@ const CellComponent: React.FC<CellProps> = ({
       }`}
       onDoubleClick={() => setIsEditing(true)}
       style={{
-        // padding: "8px",
-        // border: '1px solid #ddd',
         backgroundColor: isSelected ? "#e3f2fd" : "white",
-        width: "100%",
-        height: "100%",
       }}
     >
       {isEditing ? (
@@ -61,6 +65,7 @@ const CellComponent: React.FC<CellProps> = ({
           type={type === "number" ? "number" : "text"}
           value={inputValue}
           onBlur={handleBlur}
+          onKeyDown={handleEnter}
           onChange={handleChange}
           autoFocus
           className="cellInput"
