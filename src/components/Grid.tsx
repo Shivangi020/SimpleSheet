@@ -5,7 +5,7 @@ import { GridProps } from "../types";
 import CellComponent from "./Cell";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { TiArrowSortedUp } from "react-icons/ti";
-import { getCellKey } from "../utils";
+import { getBottomRightCornerCell, getCellKey } from "../utils";
 
 const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   const { state, dispatch } = useGrid();
@@ -22,6 +22,9 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartCell, setDragStartCell] = useState<string | null>(null);
   const [isAutoFill, setIsAutoFill] = useState(false);
+
+  // CornorKey
+  const [cornorKey, setCornorKey] = useState<string | null>(null);
 
   // Functions required Resizing column --> handleMouseDown , handleMouseMove ,handleMouseUp
   const handleMouseDown = (index: number, e: React.MouseEvent) => {
@@ -75,6 +78,11 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     const clipboardValues = clipboardText
       .split("\n")
       .map((row) => row.split("\t"));
+    console.log(
+      selectedCells,
+      "are you not able to find this",
+      clipboardValues
+    );
     dispatch({
       type: "PASTE",
       payload: { cellIds: selectedCells, values: clipboardValues },
@@ -99,6 +107,9 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
           newSelection.push(getCellKey(r, c));
         }
       }
+      document.body.style.userSelect = "none";
+      const bottomRightCell = getBottomRightCornerCell(newSelection);
+      setCornorKey(bottomRightCell);
       dispatch({
         type: "SET_SELECTED_CELLS",
         payload: { cellIds: newSelection },
@@ -111,10 +122,12 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
         type: "SET_SELECTED_CELLS",
         payload: { cellIds: newSelection },
       });
+      setCornorKey(key);
     } else {
       dispatch({ type: "SET_SELECTED_CELLS", payload: { cellIds: [key] } });
       dispatch({ type: "SET_ACTIVE_CELL", payload: { cellId: key } });
       startCell.current = { row, col };
+      setCornorKey(key);
     }
   };
 
@@ -151,13 +164,18 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     }
   };
 
+  // Functions to control Click and drag the bottom-right corner of active cells
   const handleMouseOverOnCells = (cellId: string) => {
     if (!isDragging || !isAutoFill) return;
 
     const [startRow, startCol] = dragStartCell!.split("-").map(Number);
     const [endRow, endCol] = cellId.split("-").map(Number);
 
-    const selectedCells = [];
+    const bottomRightCell = `${Math.max(startRow, endRow)}-${Math.max(
+      startCol,
+      endCol
+    )}`;
+    const dragOverCells = new Set([...selectedCells]);
     for (
       let r = Math.min(startRow, endRow);
       r <= Math.max(startRow, endRow);
@@ -168,14 +186,15 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
         c <= Math.max(startCol, endCol);
         c++
       ) {
-        selectedCells.push(`${r}-${c}`);
+        dragOverCells.add(`${r}-${c}`);
       }
     }
 
-    console.log(selectedCells, "selectedCells");
+    setCornorKey(bottomRightCell);
+    console.log(dragOverCells, selectedCells, bottomRightCell, "selectedCells");
     dispatch({
       type: "SET_SELECTED_CELLS",
-      payload: { cellIds: selectedCells },
+      payload: { cellIds: [...dragOverCells] },
     });
   };
 
@@ -226,7 +245,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     setIsAutoFill(true);
     document.body.style.userSelect = "none";
 
-    console.log("hello");
+    console.log("hello selected over drag ", cellId, selectedCells);
 
     const onMouseUp = () => handleMouseUpFromCell(cellId);
 
@@ -325,8 +344,15 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
                     />
 
                     <span
-                      className="cornorSelect"
-                      onMouseDown={() => handleMouseDownOnCorner(key)}
+                      className={
+                        cornorKey === key
+                          ? "cornorSelect activeCornor"
+                          : "cornorSelect"
+                      }
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        handleMouseDownOnCorner(key);
+                      }}
                     />
                   </td>
                 );

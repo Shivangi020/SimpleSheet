@@ -136,3 +136,22 @@ export const parseCellKey = (
   const [row, col] = cellKey.split("-").map(Number);
   return { row, col };
 };
+
+export const getBottomRightCornerCell = (
+  selectedCells: string[]
+): string | null => {
+  if (selectedCells.length === 0) return null; // No selection
+
+  let maxRow = -Infinity;
+  let maxCol = -Infinity;
+
+  for (const cellKey of selectedCells) {
+    const [r, c] = cellKey.split("-").map(Number);
+    maxRow = Math.max(maxRow, r);
+    maxCol = Math.max(maxCol, c);
+  }
+
+  const bottomRightCell = getCellKey(maxRow, maxCol);
+
+  return bottomRightCell;
+};
