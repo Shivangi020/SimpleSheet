@@ -5,37 +5,31 @@ import { GridProps } from "../types";
 import CellComponent from "./Cell";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { TiArrowSortedUp } from "react-icons/ti";
+import { getCellKey } from "../utils";
 
 const Grid: React.FC<GridProps> = ({ rows, columns }) => {
-  // const [state, dispatch] = useReducer(gridReducer, initialState);
   const { state, dispatch } = useGrid();
   const { selectedCells, cells, activeCell } = state;
-
   const [columnWidths, setColumnWidths] = useState<number[]>(
     Array(columns).fill(120)
   );
-
   const startCell = useRef<{ row: number; col: number } | null>(null);
-
-  const getCellKey = (row: number, col: number) => `${row}-${col}`;
-
   const resizingColumnIndex = useRef<number | null>(null);
   const startX = useRef<number>(0);
   const startWidth = useRef<number>(0);
+  const selectedCellsRef = useRef<string[]>(selectedCells);
 
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartCell, setDragStartCell] = useState<string | null>(null);
   const [isAutoFill, setIsAutoFill] = useState(false);
-  const selectedCellsRef = useRef<string[]>(selectedCells);
 
+  // Functions required Resizing column --> handleMouseDown , handleMouseMove ,handleMouseUp
   const handleMouseDown = (index: number, e: React.MouseEvent) => {
     resizingColumnIndex.current = index;
     startX.current = e.clientX;
     startWidth.current = columnWidths[index];
-
     // Disable text selection when resizing
     document.body.style.userSelect = "none";
-
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
@@ -56,7 +50,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
       return newWidths;
     });
   };
-
   // Stop resizing
   const handleMouseUp = () => {
     resizingColumnIndex.current = null;
@@ -66,7 +59,29 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
-  // handles cell click
+  const handleCopy = () => {
+    if (selectedCells.length === 0) return;
+    const copiedData = selectedCells
+      .map((cellId) => cells[cellId]?.value || "")
+      .join("\t");
+
+    navigator.clipboard.writeText(copiedData);
+    dispatch({ type: "COPY" });
+  };
+
+  const handlePaste = async () => {
+    if (selectedCells.length === 0) return;
+    const clipboardText = await navigator.clipboard.readText();
+    const clipboardValues = clipboardText
+      .split("\n")
+      .map((row) => row.split("\t"));
+    dispatch({
+      type: "PASTE",
+      payload: { cellIds: selectedCells, values: clipboardValues },
+    });
+  };
+
+  // Function for handling Cell click with single Click , Shift + click , Ctrl/Cmd + click
   const handleCellClick = (row: number, col: number, e: React.MouseEvent) => {
     const key = getCellKey(row, col);
 
@@ -105,32 +120,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     }
   };
 
-  const handleCopy = () => {
-    if (selectedCells.length === 0) return;
-
-    console.log(selectedCells, cells, activeCell, "copy paste 1");
-    const copiedData = selectedCells
-      .map((cellId) => cells[cellId]?.value || "")
-      .join("\t");
-
-    navigator.clipboard.writeText(copiedData);
-    dispatch({ type: "COPY" });
-  };
-
-  const handlePaste = async () => {
-    if (selectedCells.length === 0) return;
-
-    const clipboardText = await navigator.clipboard.readText();
-    const clipboardValues = clipboardText
-      .split("\n")
-      .map((row) => row.split("\t"));
-
-    dispatch({
-      type: "PASTE",
-      payload: { cellIds: selectedCells, values: clipboardValues },
-    });
-  };
-
   const handleCellChange = (cellId: string, newValue: string | number) => {
     if (!newValue) return;
 
@@ -165,18 +154,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
       });
     }
   };
-
-  // When clicking on bottom right corner
-  // const handleMouseDownOnCorner = (cellId: string) => {
-  //   setIsDragging(true);
-  //   setDragStartCell(cellId);
-  //   setIsAutoFill(true);
-  //   document.body.style.userSelect = "none";
-
-  //   console.log("hello  ");
-
-  //   document.addEventListener("mouseup", () => handleMouseUpFromCell(cellId));
-  // };
 
   const handleMouseOverOnCells = (cellId: string) => {
     if (!isDragging || !isAutoFill) return;
