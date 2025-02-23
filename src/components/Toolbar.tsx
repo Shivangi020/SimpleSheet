@@ -2,6 +2,9 @@ import React from "react";
 import { ToolbarProps } from "../types";
 import { MdUndo } from "react-icons/md";
 import { MdRedo } from "react-icons/md";
+import { AiOutlineSortAscending } from "react-icons/ai";
+import { AiOutlineSortDescending } from "react-icons/ai";
+import { useGrid } from "../ GridContext";
 
 const Toolbar: React.FC<ToolbarProps> = ({
   canUndo,
@@ -10,6 +13,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onRedo,
   onSort,
 }) => {
+  const { state } = useGrid();
+
+  console.log(state);
   return (
     <div className="toolbarCn">
       <div className="toolbar">
@@ -39,16 +45,26 @@ const Toolbar: React.FC<ToolbarProps> = ({
           <MdRedo size={25} />
           <span>Redo</span>
         </button>
-        <select
-          onChange={(e) => onSort(e.target.value as "asc" | "desc")}
-          className="sortSelect"
-        >
-          <option value="" disabled selected>
-            Sort
-          </option>
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>
+        <div className="sortSelect">
+          <div
+            onClick={() => onSort("asc")}
+            className={
+              state.sortState === "asc" ? "sortBtn selectedSort" : "sortBtn"
+            }
+          >
+            <AiOutlineSortAscending size={25} />
+            <span>Asc</span>
+          </div>
+          <div
+            onClick={() => onSort("desc")}
+            className={
+              state.sortState === "desc" ? "sortBtn selectedSort" : "sortBtn"
+            }
+          >
+            <AiOutlineSortDescending size={25} />
+            <span>Desc</span>
+          </div>
+        </div>
 
         <div className="activeCellData">some data inside it</div>
       </div>

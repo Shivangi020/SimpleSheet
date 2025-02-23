@@ -303,19 +303,14 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
             <th className="emptyCorner"></th> {/* Top-left corner empty */}
             {columnWidths.map((width, colIdx) => (
               <th key={colIdx} style={{ width }} className="header">
-                <div className="headerCell">
+                <div
+                  className="headerCell"
+                  onClick={() => {
+                    handleSort(colIdx);
+                  }}
+                >
                   <span>Column {colIdx}</span>
-                  <span
-                    onClick={() => {
-                      handleSort(colIdx);
-                    }}
-                  >
-                    {state.sortState === "asc" ? (
-                      <AiOutlineSortAscending size={20} />
-                    ) : (
-                      <AiOutlineSortDescending size={20} />
-                    )}
-                  </span>
+
                   <div
                     className="resizer"
                     onMouseDown={(e) => handleMouseDown(colIdx, e)}

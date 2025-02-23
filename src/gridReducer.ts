@@ -30,7 +30,6 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           [cellId]: { ...state.cells[cellId], value },
         },
         undoStack: [...state.undoStack, action],
-        redoStack: [],
       };
 
     case "MULTI_UPDATE":
@@ -50,7 +49,6 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         ...state,
         cells: updatedCells,
         undoStack: [...state.undoStack, action],
-        redoStack: [],
       };
 
     case "SET_ACTIVE_CELL":
@@ -112,6 +110,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         };
       } else if (lastAction.type === "SORT_COLUMN") {
         const { cellsCopy, direction } = lastAction.payload;
+        const sortedCellsForRedo = { ...state.cells };
         return {
           ...state,
           cells: cellsCopy,
@@ -119,7 +118,10 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           undoStack: state.undoStack.slice(0, -1),
           redoStack: [
             ...state.redoStack,
-            lastAction, // Save action for redo
+            {
+              ...lastAction,
+              payload: { ...lastAction.payload, cellsCopy: sortedCellsForRedo },
+            }, // Save action for redo
           ],
         };
       }
@@ -165,6 +167,21 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           cells: autoFilledCells, // Reapply paste
           redoStack: state.redoStack.slice(0, -1), // Remove from redo stack
           undoStack: [...state.undoStack, lastRedo], // Move back to undo stack
+        };
+      } else if (lastRedo.type === "SORT_COLUMN") {
+        const { cellsCopy } = lastRedo.payload;
+        const cellCopyForUndo = { ...state.cells };
+        return {
+          ...state,
+          cells: cellsCopy, // Reapply paste
+          redoStack: state.redoStack.slice(0, -1), // Remove from redo stack
+          undoStack: [
+            ...state.undoStack,
+            {
+              ...lastRedo,
+              payload: { ...lastRedo.payload, cellsCopy: cellCopyForUndo },
+            },
+          ], // Move back to undo stack
         };
       }
 
