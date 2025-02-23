@@ -33,6 +33,7 @@ export type GridAction =
       payload: {
         columnId: string;
         direction: "asc" | "desc";
+        cellsCopy: Record<string, Cell>;
       };
     }
   | {

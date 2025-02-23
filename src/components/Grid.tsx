@@ -269,9 +269,10 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   const handleSort = (colIdx: number) => {
     const newDirection = state.sortState;
     const columnId = `${colIdx}`;
+    const cellsCopy = { ...state.cells };
     dispatch({
       type: "SORT_COLUMN",
-      payload: { columnId: columnId, direction: newDirection },
+      payload: { columnId: columnId, direction: newDirection, cellsCopy },
     });
   };
 
