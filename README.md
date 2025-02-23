@@ -8,7 +8,7 @@ This is a React application built with Vite and TypeScript for fast development 
 - 🎨 Tailwind CSS (optional)
 - 🔧 ESLint & Prettier configured
 
-### Grid Table Features
+### SpreadSheet Features
 - 📏 Minimum 20x20 grid cells
 - ↔️ Adjustable column width by dragging borders
 - 📌 Sticky first row and first column while scrolling
