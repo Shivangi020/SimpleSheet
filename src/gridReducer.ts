@@ -61,7 +61,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "UNDO": {
       if (state.undoStack.length === 0) return state;
       const lastAction = state.undoStack[state.undoStack.length - 1];
-
+      console.log(lastAction, "issue in undo");
       if (lastAction.type === "UPDATE_CELL") {
         const { cellId, previousValue } = lastAction.payload;
 
@@ -78,6 +78,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
       } else if (lastAction.type === "COPYPASTE") {
         const { previousValues } = lastAction.payload;
         const restoredCells = { ...state.cells };
+        console.log(restoredCells, previousValues, "copyPaste undo");
         Object.entries(previousValues).forEach(([cellId, data]) => {
           restoredCells[cellId] = {
             ...restoredCells[cellId],
@@ -100,6 +101,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
           };
         });
 
+        console.log(autoFilledCells, "line104");
         return {
           ...state,
           cells: autoFilledCells,
@@ -133,6 +135,8 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
       if (state.redoStack.length === 0) return state;
 
       const lastRedo = state.redoStack[state.redoStack.length - 1];
+
+      console.log(lastRedo, "issue in redo");
       if (lastRedo.type === "UPDATE_CELL") {
         const { cellId, value } = lastRedo.payload;
         return {
@@ -146,8 +150,9 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         };
       } else if (lastRedo.type === "COPYPASTE") {
         const { cellIds, values } = lastRedo.payload;
-
         const { pastedCells } = applyPaste(values, cellIds, state.cells);
+
+        console.log(cellIds, pastedCells, values, "copyPaste redo");
         return {
           ...state,
           cells: pastedCells, // Reapply paste
@@ -205,7 +210,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
       };
 
     case "PASTE":
-      const copiedValues = action.payload.values; // Could be a 2D array or a single value
+      const copiedValues = action.payload.values;
       const cellIds = action.payload.cellIds;
 
       const { pastedCells, previousValues } = applyPaste(

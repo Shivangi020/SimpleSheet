@@ -205,16 +205,19 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
       }
     });
 
-    dispatch({
-      type: "AUTO_FILL",
-      payload: {
-        updates: Object.entries(fillValues).map(([cellId, value]) => ({
-          cellId,
-          value,
-          previousValue: cells[cellId]?.value || "",
-        })),
-      },
-    });
+    // Run auto fill if there is some values
+    if (Object.keys(fillValues)?.length > 0) {
+      dispatch({
+        type: "AUTO_FILL",
+        payload: {
+          updates: Object.entries(fillValues).map(([cellId, value]) => ({
+            cellId,
+            value,
+            previousValue: cells[cellId]?.value || "",
+          })),
+        },
+      });
+    }
 
     document.removeEventListener("mouseup", () => handleMouseUpFromCell(""));
   };
