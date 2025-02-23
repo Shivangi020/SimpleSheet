@@ -176,17 +176,18 @@ td:hover {
 .activeCellData {
   height: 38px;
   outline: none;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
-    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+
   border-radius: 10px;
   flex: 0.8;
   display: flex;
   align-items: center;
   padding: 7px;
-  background-color: #fff;
+  background-color: #e6f2ff;
   font-size: 0.8em;
   gap: 5px;
   font-weight: 400;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px,
+    rgb(209, 213, 219) 0px 0px 0px 1px inset;
 }
 .value {
   font-size: 1.2em;
@@ -205,7 +206,7 @@ td:hover {
 .verticalDivider {
   margin: 0;
   height: 100%;
-  border: 1px solid #e2e2e2;
+  border: 1px solid #bababa;
   margin-left: 10px;
   margin-right: 10px;
 }

@@ -7,13 +7,12 @@ import { useGrid } from "./ GridContext";
 
 const App: React.FC = () => {
   const { state, dispatch } = useGrid();
+
   const handleCellUpdate = (cellId: string, value: string | number) => {
-    // will implement cell update
     console.log(cellId, value, "handleCellUpdate Function");
   };
 
   const handleSort = (columnId: string, direction: "asc" | "desc") => {
-    // Implement sorting logic
     console.log(columnId, direction, "handleSort");
   };
 

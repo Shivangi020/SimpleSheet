@@ -17,7 +17,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
   const { state } = useGrid();
   const { activeCell, cells } = state;
 
-  console.log(state);
   return (
     <div className="toolbarCn">
       <div className="toolbar">
