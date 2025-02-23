@@ -10,19 +10,23 @@ import { getBottomRightCornerCell, getCellKey } from "../utils";
 const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   const { state, dispatch } = useGrid();
   const { selectedCells, cells, activeCell } = state;
+
+  // Initializing  column width
   const [columnWidths, setColumnWidths] = useState<number[]>(
     Array(columns).fill(120)
   );
-  const startCell = useRef<{ row: number; col: number } | null>(null);
+
+  // States for column resize purpose
   const resizingColumnIndex = useRef<number | null>(null);
   const startX = useRef<number>(0);
   const startWidth = useRef<number>(0);
 
-  // States for dragging over cells and autofilling them
+  // States for dragging over cells and autofilling them or multi select cell
   const selectedCellsRef = useRef<string[]>(selectedCells);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartCell, setDragStartCell] = useState<string | null>(null);
   const [isAutoFill, setIsAutoFill] = useState(false);
+  const startCell = useRef<{ row: number; col: number } | null>(null);
 
   // CornorKey state to show blue colored cornor on right bottom cornor cell
   const [cornorKey, setCornorKey] = useState<string | null>(null);
@@ -32,7 +36,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     resizingColumnIndex.current = index;
     startX.current = e.clientX;
     startWidth.current = columnWidths[index];
-    // Disable text selection when resizing
     document.body.style.userSelect = "none";
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
@@ -58,7 +61,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   // Stop resizing
   const handleMouseUp = () => {
     resizingColumnIndex.current = null;
-    // Re-enable text selection after resizing
     document.body.style.userSelect = "auto";
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
