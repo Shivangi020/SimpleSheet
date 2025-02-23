@@ -45,15 +45,38 @@ const CellComponent: React.FC<CellProps> = ({
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const actionKeys = [
+      "Enter",
+      "Shift",
+      "Control",
+      "Alt",
+      "Meta",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "Escape",
+      "Meta",
+    ];
+
+    if (!actionKeys.includes(e.key)) {
+      console.log("not active", actionKeys);
+      setIsEditing(true);
+    }
+  };
+
   return (
     <div
       className={`cell ${isSelected ? "selected" : ""} ${
         isActive ? "active" : ""
       }`}
       onDoubleClick={() => setIsEditing(true)}
+      onKeyDown={handleKeyPress}
       style={{
         backgroundColor: isSelected ? "#e3f2fd" : "white",
       }}
+      tabIndex={0}
     >
       {isEditing ? (
         <input
