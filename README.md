@@ -8,6 +8,16 @@ This is a React application built with Vite and TypeScript for fast development 
 - 🎨 Tailwind CSS (optional)
 - 🔧 ESLint & Prettier configured
 
+### Grid Table Features
+- 📏 Minimum 20x20 grid cells
+- ↔️ Adjustable column width by dragging borders
+- 📌 Sticky first row and first column while scrolling
+- 🔲 Supports selecting individual and multiple cells
+- 📋 Copy/Paste functionality via Clipboard API
+- 🔄 Undo/Redo for cell changes 
+- ⬆️⬇️ Column sorting  
+- 🖱️ Click and drag to auto-fill content to adjacent cells
+
 ## Installation
 
 1. Clone the repository:
