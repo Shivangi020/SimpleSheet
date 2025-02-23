@@ -70,8 +70,6 @@ export const sortAndMapRows = (
   columnId: string,
   direction: "asc" | "desc"
 ): Record<string, Cell> => {
-  console.log(columnId, "debug columnId");
-
   // Extract rows with column values
   const rows = Object.keys(newCells)
     .filter((key) => key.endsWith(`-${columnId}`))
@@ -80,8 +78,6 @@ export const sortAndMapRows = (
       rowId: parseInt(key.split("-")[0]),
       value: newCells[key]?.value || "",
     }));
-
-  console.log(rows, "debug rows");
 
   // Sort rows based on column value (number or string)
   rows.sort((a, b) => {
@@ -98,21 +94,17 @@ export const sortAndMapRows = (
       : String(valB).localeCompare(String(valA));
   });
 
-  console.log(rows, "debug sortedrows");
-
   // Create a new mapping of rows after sorting
   const rowMapping: Record<number, number> = {};
   rows.forEach(({ rowId }, newIndex) => {
     rowMapping[rowId] = newIndex;
   });
 
-  console.log(rowMapping, "debug rowsMapping");
-
   // Apply the row mapping to update cell positions
   const sortedCells: Record<string, Cell> = {};
   Object.keys(newCells).forEach((key) => {
     const [row, col] = key.split("-").map(Number);
-    console.log(row, col, "debug each");
+
     if (rowMapping[row] !== undefined) {
       const newKey = `${rowMapping[row]}-${col}`;
       sortedCells[newKey] = {
