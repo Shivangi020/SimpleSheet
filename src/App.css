@@ -45,7 +45,7 @@ td {
   width: 50px;
   position: sticky;
   left: 0;
-  background-color: white;
+  background-color: #f1f1f1;
   z-index: 2;
   outline: 1px solid #d3d3d3;
 }
@@ -54,7 +54,7 @@ td {
   position: sticky;
   top: 0;
   outline: 1px solid #d3d3d3;
-  background-color: white;
+  background-color: #f1f1f1;
   z-index: 2;
   height: 2em;
 }
@@ -81,7 +81,7 @@ td {
 .headerCell {
   height: 100%;
   position: relative;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 0.8em;
   display: flex;
   align-items: center;

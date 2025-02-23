@@ -2,7 +2,6 @@ import React from "react";
 import { ToolbarProps } from "../types";
 import { MdUndo } from "react-icons/md";
 import { MdRedo } from "react-icons/md";
-import { BsSortAlphaUp } from "react-icons/bs";
 
 const Toolbar: React.FC<ToolbarProps> = ({
   canUndo,
@@ -47,10 +46,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           <option value="" disabled selected>
             Sort
           </option>
-          <option value="asc">
-            <BsSortAlphaUp />
-            <span>Ascending</span>
-          </option>
+          <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
         </select>
 

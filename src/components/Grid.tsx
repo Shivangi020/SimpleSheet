@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useGrid } from "../ GridContext";
 import { GridProps } from "../types";
 import CellComponent from "./Cell";
+import { AiOutlineSortAscending } from "react-icons/ai";
+import { AiOutlineSortDescending } from "react-icons/ai";
 
 const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   // const [state, dispatch] = useReducer(gridReducer, initialState);
@@ -257,7 +259,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
 
     document.addEventListener("mouseup", onMouseUp);
 
-    // ✅ Properly remove listener after execution
+    // Properly remove listener after execution
     document.addEventListener("mouseup", function removeListener() {
       document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mouseup", removeListener); // Remove itself
@@ -265,8 +267,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   };
 
   const handleSort = (colIdx: number) => {
-    const newDirection = "asc";
-
+    const newDirection = state.sortState;
     const columnId = `${colIdx}`;
     dispatch({
       type: "SORT_COLUMN",
@@ -302,13 +303,17 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
             {columnWidths.map((width, colIdx) => (
               <th key={colIdx} style={{ width }} className="header">
                 <div className="headerCell">
-                  Column {colIdx}{" "}
+                  <span>Column {colIdx}</span>
                   <span
                     onClick={() => {
                       handleSort(colIdx);
                     }}
                   >
-                    🔼
+                    {state.sortState === "asc" ? (
+                      <AiOutlineSortAscending size={20} />
+                    ) : (
+                      <AiOutlineSortDescending size={20} />
+                    )}
                   </span>
                   <div
                     className="resizer"

@@ -10,7 +10,7 @@ export interface GridState {
   activeCell: string | null; // Currently active cell id
   undoStack: GridAction[]; // Stack of actions for undo
   redoStack: GridAction[]; // Stack of actions for redo
-  sortState: "asc" | "desc" | null;
+  sortState: "asc" | "desc";
 }
 
 export type GridAction =
