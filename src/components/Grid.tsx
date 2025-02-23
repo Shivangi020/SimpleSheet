@@ -220,7 +220,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
         },
       });
     }
-
+    setCornorKey("");
     document.removeEventListener("mouseup", () => handleMouseUpFromCell(""));
   };
 
