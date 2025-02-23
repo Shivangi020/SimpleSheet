@@ -206,8 +206,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     document.body.style.userSelect = "auto";
     if (!dragStartCellId) return;
     const updatedSelectedCells = selectedCellsRef.current; // Get the latest selectedCells
-
-    console.log(draggedOverCellIds, updatedSelectedCells, "we are in mouseUp");
     let fillValues: { [key: string]: string | number } = {};
     updatedSelectedCells.forEach((cellId) => {
       if (cells[dragStartCellId]) {

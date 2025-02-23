@@ -63,7 +63,6 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "UNDO": {
       if (state.undoStack.length === 0) return state;
       const lastAction = state.undoStack[state.undoStack.length - 1];
-      console.log(state.undoStack);
 
       if (lastAction.type === "UPDATE_CELL") {
         const { cellId, previousValue } = lastAction.payload;
@@ -154,7 +153,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "REDO": {
       if (state.redoStack.length === 0) return state;
       const lastRedo = state.redoStack[state.redoStack.length - 1];
-      console.log(state.redoStack);
+
       if (lastRedo.type === "UPDATE_CELL") {
         const { cellId, value } = lastRedo.payload;
         return {
