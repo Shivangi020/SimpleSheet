@@ -46,16 +46,24 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
       };
 
     case "SET_ACTIVE_CELL":
-      return { ...state, activeCell: action.payload.cellId };
+      return {
+        ...state,
+        activeCell: action.payload.cellId,
+      };
 
     case "SET_SELECTED_CELLS":
-      return { ...state, selectedCells: action.payload.cellIds };
+      return {
+        ...state,
+        selectedCells: action.payload.cellIds,
+        undoStack: [...state.undoStack, action],
+      };
 
     case "UPDATE_SORT_DIRECTION":
       return { ...state, sortState: action.payload.direction };
     case "UNDO": {
       if (state.undoStack.length === 0) return state;
       const lastAction = state.undoStack[state.undoStack.length - 1];
+      console.log(state.undoStack);
 
       if (lastAction.type === "UPDATE_CELL") {
         const { cellId, previousValue } = lastAction.payload;
@@ -121,6 +129,24 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
             },
           ],
         };
+      } else if (lastAction.type === "SET_SELECTED_CELLS") {
+        const { prevSelectedCellIds, cellIds } = lastAction.payload;
+        return {
+          ...state,
+          selectedCells: prevSelectedCellIds,
+          undoStack: state.undoStack.slice(0, -1),
+          redoStack: [
+            ...state.redoStack,
+            {
+              ...lastAction,
+              payload: {
+                ...lastAction.payload,
+                prevSelectedCellIds: cellIds,
+                cellIds: prevSelectedCellIds,
+              },
+            },
+          ],
+        };
       }
       return state;
     }
@@ -128,6 +154,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "REDO": {
       if (state.redoStack.length === 0) return state;
       const lastRedo = state.redoStack[state.redoStack.length - 1];
+      console.log(state.redoStack);
       if (lastRedo.type === "UPDATE_CELL") {
         const { cellId, value } = lastRedo.payload;
         return {
@@ -176,6 +203,24 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
             {
               ...lastRedo,
               payload: { ...lastRedo.payload, cellsCopy: cellCopyForUndo },
+            },
+          ],
+        };
+      } else if (lastRedo.type === "SET_SELECTED_CELLS") {
+        const { prevSelectedCellIds, cellIds } = lastRedo.payload;
+        return {
+          ...state,
+          selectedCells: prevSelectedCellIds,
+          redoStack: state.redoStack.slice(0, -1),
+          undoStack: [
+            ...state.undoStack,
+            {
+              ...lastRedo,
+              payload: {
+                ...lastRedo.payload,
+                prevSelectedCellIds: cellIds,
+                cellIds: prevSelectedCellIds,
+              },
             },
           ],
         };

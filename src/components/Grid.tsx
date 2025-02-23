@@ -30,6 +30,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
 
   // CornorKey state to show blue colored cornor on right bottom cornor cell
   const [cornorKey, setCornorKey] = useState<string | null>(null);
+  const [draggedOverCellIds, setDraggedOverCellIds] = useState<string[]>([]);
 
   // Functions required Resizing column --> handleMouseDown , handleMouseMove ,handleMouseUp
   const handleMouseDown = (index: number, e: React.MouseEvent) => {
@@ -92,6 +93,9 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   // Function for handling Cell click with single Click , Shift + click , Ctrl/Cmd + click
   const handleCellClick = (row: number, col: number, e: React.MouseEvent) => {
     const key = getCellKey(row, col);
+    const prevSelectedCellIds = [...selectedCells];
+    // const prevActiveCellId = state.activeCell || "";
+
     if (e.shiftKey && startCell.current) {
       const newSelection: string[] = [];
       for (
@@ -110,9 +114,13 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
       document.body.style.userSelect = "none";
       const bottomRightCell = getBottomRightCornerCell(newSelection);
       setCornorKey(bottomRightCell);
+
       dispatch({
         type: "SET_SELECTED_CELLS",
-        payload: { cellIds: newSelection },
+        payload: {
+          cellIds: newSelection,
+          prevSelectedCellIds: prevSelectedCellIds,
+        },
       });
     } else if (e.ctrlKey || e.metaKey) {
       const newSelection = selectedCells.includes(key)
@@ -120,11 +128,14 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
         : [...selectedCells, key];
       dispatch({
         type: "SET_SELECTED_CELLS",
-        payload: { cellIds: newSelection },
+        payload: { cellIds: newSelection, prevSelectedCellIds },
       });
       setCornorKey(key);
     } else {
-      dispatch({ type: "SET_SELECTED_CELLS", payload: { cellIds: [key] } });
+      dispatch({
+        type: "SET_SELECTED_CELLS",
+        payload: { cellIds: [key], prevSelectedCellIds },
+      });
       dispatch({ type: "SET_ACTIVE_CELL", payload: { cellId: key } });
       startCell.current = { row, col };
       setCornorKey(key);
@@ -186,11 +197,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     }
 
     setCornorKey(bottomRightCell);
-
-    dispatch({
-      type: "SET_SELECTED_CELLS",
-      payload: { cellIds: [...dragOverCells] },
-    });
+    setDraggedOverCellIds([...dragOverCells]);
   };
 
   const handleMouseUpFromCell = (dragStartCellId: string) => {
@@ -200,11 +207,20 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     if (!dragStartCellId) return;
     const updatedSelectedCells = selectedCellsRef.current; // Get the latest selectedCells
 
+    console.log(draggedOverCellIds, updatedSelectedCells, "we are in mouseUp");
     let fillValues: { [key: string]: string | number } = {};
     updatedSelectedCells.forEach((cellId) => {
       if (cells[dragStartCellId]) {
         fillValues[cellId] = cells[dragStartCellId].value; // Copy-fill logic
       }
+    });
+
+    dispatch({
+      type: "SET_SELECTED_CELLS",
+      payload: {
+        cellIds: [...updatedSelectedCells],
+        prevSelectedCellIds: [...selectedCells],
+      },
     });
 
     // Run auto fill if there is some values
@@ -221,6 +237,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
       });
     }
     setCornorKey("");
+    setDraggedOverCellIds([]);
     document.removeEventListener("mouseup", () => handleMouseUpFromCell(""));
   };
 
@@ -252,8 +269,8 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   };
 
   useEffect(() => {
-    selectedCellsRef.current = selectedCells;
-  }, [selectedCells]);
+    selectedCellsRef.current = draggedOverCellIds;
+  }, [draggedOverCellIds]);
 
   // UseEffect runs for handle copy and paste
   useEffect(() => {
@@ -325,16 +342,17 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
                       id={key}
                       value={cells[key]?.value || ""}
                       type={cells[key]?.type || "text"}
-                      isSelected={selectedCells.includes(key)}
+                      isSelected={
+                        selectedCells.includes(key) ||
+                        draggedOverCellIds.includes(key)
+                      }
                       isActive={activeCell === key}
                       onChange={(value) => handleCellChange(key, value)}
                     />
 
                     <span
                       className={
-                        cornorKey === key
-                          ? "cornorSelect activeCornor"
-                          : "cornorSelect"
+                        cornorKey === key ? "cornorSelect " : "cornorSelect"
                       }
                       onMouseDown={(e) => {
                         e.stopPropagation();
