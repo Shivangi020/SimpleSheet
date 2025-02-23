@@ -8,14 +8,6 @@ import { useGrid } from "./ GridContext";
 const App: React.FC = () => {
   const { state, dispatch } = useGrid();
 
-  const handleCellUpdate = (cellId: string, value: string | number) => {
-    console.log(cellId, value, "handleCellUpdate Function");
-  };
-
-  const handleSort = (columnId: string, direction: "asc" | "desc") => {
-    console.log(columnId, direction, "handleSort");
-  };
-
   const handleUndo = () => dispatch({ type: "UNDO" });
   const handleRedo = () => dispatch({ type: "REDO" });
   const handleSortDirection = (direction: "asc" | "desc") =>
@@ -30,12 +22,7 @@ const App: React.FC = () => {
         onRedo={handleRedo}
         onSort={handleSortDirection}
       />
-      <Grid
-        rows={20}
-        columns={20}
-        onCellUpdate={handleCellUpdate}
-        onSort={handleSort}
-      />
+      <Grid rows={20} columns={20} />
     </div>
   );
 };

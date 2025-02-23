@@ -86,8 +86,9 @@ export type GridAction =
 export interface GridProps {
   rows: number;
   columns: number;
-  onCellUpdate: (cellId: string, value: string | number) => void;
-  onSort: (columnId: string, direction: "asc" | "desc") => void;
+  // Removing these utility function types since they are already defined inside the grid  component
+  // onCellUpdate: (cellId: string, value: string | number) => void;
+  // onSort: (columnId: string, direction: "asc" | "desc") => void;
 }
 
 // Cell component props
