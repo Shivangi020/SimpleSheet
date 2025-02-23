@@ -278,18 +278,22 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
             <th className="emptyCorner"></th> {/* Top-left corner empty */}
             {columnWidths.map((width, colIdx) => (
               <th key={colIdx} style={{ width }} className="header">
-                <div
-                  className="headerCell"
-                  onClick={() => {
-                    handleSort(colIdx);
-                  }}
-                >
+                <div className="headerCell">
                   <span>Column {colIdx}</span>
-                  {state.sortState === "asc" ? (
-                    <TiArrowSortedDown size={18} />
-                  ) : (
-                    <TiArrowSortedUp size={18} />
-                  )}
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSort(colIdx);
+                    }}
+                    className="sortingIcon"
+                  >
+                    {state.sortState === "asc" ? (
+                      <TiArrowSortedDown size={18} />
+                    ) : (
+                      <TiArrowSortedUp size={18} />
+                    )}
+                  </span>
+
                   <div
                     className="resizer"
                     onMouseDown={(e) => handleMouseDown(colIdx, e)}

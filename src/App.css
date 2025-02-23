@@ -116,6 +116,14 @@ td:hover {
   background-color: #007bff;
 }
 
+.sortingIcon {
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Toolbar CSS Starts from here -----------------------------> */
 .toolbarCn {
   display: flex;

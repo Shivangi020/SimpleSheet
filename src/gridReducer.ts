@@ -66,7 +66,7 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
             ...state.cells,
             [cellId]: { ...state.cells[cellId], value: previousValue },
           },
-          activeCell: cellId,
+
           undoStack: state.undoStack.slice(0, -1), // Remove last action
           redoStack: [...state.redoStack, lastAction], // Push to redo stack
         };
