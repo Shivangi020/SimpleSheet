@@ -22,7 +22,6 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
         return state;
       }
 
-      console.log("updating single cell");
       return {
         ...state,
         cells: {
@@ -62,15 +61,17 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "UNDO": {
       if (state.undoStack.length === 0) return state;
       const lastAction = state.undoStack[state.undoStack.length - 1];
+
       if (lastAction.type === "UPDATE_CELL") {
         const { cellId, previousValue } = lastAction.payload;
-        console.log(cellId, previousValue, "undo debug 68");
+
         return {
           ...state,
           cells: {
             ...state.cells,
             [cellId]: { ...state.cells[cellId], value: previousValue },
           },
+          activeCell: cellId,
           undoStack: state.undoStack.slice(0, -1), // Remove last action
           redoStack: [...state.redoStack, lastAction], // Push to redo stack
         };
@@ -229,56 +230,6 @@ export function gridReducer(state: GridState, action: GridAction): GridState {
     case "SORT_COLUMN": {
       const { columnId, direction } = action.payload;
       const newCells = { ...state.cells };
-
-      // console.log(columnId, "debug columnId");
-      // // Extract rows with column values
-      // const rows = Object.keys(newCells)
-      //   .filter((key) => key.endsWith(`-${columnId}`)) // Find cells in the sorted column
-      //   .map((key) => ({
-      //     key,
-      //     rowId: parseInt(key.split("-")[0]), // Extract row index
-      //     value: newCells[key]?.value || "",
-      //   }));
-
-      // console.log(rows, "debug rows");
-      // // Sort rows based on column value (number or string)
-      // rows.sort((a, b) => {
-      //   const valA = a.value;
-      //   const valB = b.value;
-
-      //   if (!isNaN(Number(valA)) && !isNaN(Number(valB))) {
-      //     return direction === "asc"
-      //       ? Number(valA) - Number(valB)
-      //       : Number(valB) - Number(valA);
-      //   }
-      //   return direction === "asc"
-      //     ? String(valA).localeCompare(String(valB))
-      //     : String(valB).localeCompare(String(valA));
-      // });
-
-      // console.log(rows, "debug sortedrows");
-      // // Create a new mapping of rows after sorting
-      // const rowMapping: { [oldRowId: number]: number } = {};
-      // rows.forEach(({ rowId }, newIndex) => {
-      //   rowMapping[rowId] = newIndex; // Map old row index to new row index
-      // });
-
-      // console.log(rowMapping, "debug rowsMapping");
-      // // Apply the row mapping to update cell positions
-      // const updatedCells: Record<string, Cell> = {};
-      // Object.keys(newCells).forEach((key) => {
-      //   const [row, col] = key.split("-").map(Number);
-      //   console.log(row, col, "debug each");
-      //   if (rowMapping[row] !== undefined) {
-      //     const newKey = `${rowMapping[row]}-${col}`;
-      //     updatedCells[newKey] = {
-      //       ...newCells[key], // Preserve all cell properties
-      //       id: newKey, // Update the ID to reflect the new row index
-      //     };
-      //   } else {
-      //     updatedCells[key] = newCells[key]; // Preserve other cells
-      //   }
-      // });
 
       const sortedCells = sortAndMapRows(newCells, columnId, direction);
 

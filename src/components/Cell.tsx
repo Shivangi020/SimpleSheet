@@ -25,7 +25,7 @@ const CellComponent: React.FC<CellProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let newValue: string | number = e.target.value;
     if (type === "number") {
-      if (isNaN(Number(newValue))) return; // Prevent non-numeric input
+      if (isNaN(Number(newValue))) return;
       newValue = Number(newValue);
     }
 
@@ -49,11 +49,9 @@ const CellComponent: React.FC<CellProps> = ({
   // This function listens for key presses on the parent <div> and enables editing mode (isEditing = true)
   // when users start typing, eliminating the need for a double-click to enter editing mode.
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    console.log(e.key, "handle key press");
-
     // To Ignore Copy (Ctrl/Cmd + C) and Paste (Ctrl/Cmd + V)
     if ((e.ctrlKey || e.metaKey) && (e.key === "c" || e.key === "v")) {
-      return; // Do nothing, don't enable editing
+      return;
     }
     if (!actionKeys.includes(e.key)) {
       setIsEditing(true);

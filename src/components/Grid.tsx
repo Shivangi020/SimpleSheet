@@ -17,13 +17,14 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   const resizingColumnIndex = useRef<number | null>(null);
   const startX = useRef<number>(0);
   const startWidth = useRef<number>(0);
-  const selectedCellsRef = useRef<string[]>(selectedCells);
 
+  // States for dragging over cells and autofilling them
+  const selectedCellsRef = useRef<string[]>(selectedCells);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartCell, setDragStartCell] = useState<string | null>(null);
   const [isAutoFill, setIsAutoFill] = useState(false);
 
-  // CornorKey
+  // CornorKey state to show blue colored cornor on right bottom cornor cell
   const [cornorKey, setCornorKey] = useState<string | null>(null);
 
   // Functions required Resizing column --> handleMouseDown , handleMouseMove ,handleMouseUp
@@ -53,6 +54,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
       return newWidths;
     });
   };
+
   // Stop resizing
   const handleMouseUp = () => {
     resizingColumnIndex.current = null;
@@ -78,11 +80,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     const clipboardValues = clipboardText
       .split("\n")
       .map((row) => row.split("\t"));
-    console.log(
-      selectedCells,
-      "are you not able to find this",
-      clipboardValues
-    );
+
     dispatch({
       type: "PASTE",
       payload: { cellIds: selectedCells, values: clipboardValues },
@@ -131,14 +129,8 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     }
   };
 
+  // This function  is called cell value updated (onBlur  , onKeyDown)
   const handleCellChange = (cellId: string, newValue: string | number) => {
-    console.log("handle Change", {
-      cells,
-      cellId,
-      newValue,
-      value: cells[cellId]?.value,
-      activeCell,
-    });
     if (selectedCells.length > 1) {
       // Multi-update if multiple cells selected
       dispatch({
@@ -165,6 +157,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
   };
 
   // Functions to control Click and drag the bottom-right corner of active cells
+  // ---> (handleMouseOverOnCells ,handleMouseUpFromCell ,handleMouseDownOnCorner)
   const handleMouseOverOnCells = (cellId: string) => {
     if (!isDragging || !isAutoFill) return;
 
@@ -191,7 +184,7 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     }
 
     setCornorKey(bottomRightCell);
-    console.log(dragOverCells, selectedCells, bottomRightCell, "selectedCells");
+
     dispatch({
       type: "SET_SELECTED_CELLS",
       payload: { cellIds: [...dragOverCells] },
@@ -202,17 +195,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     setIsDragging(false);
     setIsAutoFill(false);
     document.body.style.userSelect = "auto";
-
-    console.log(
-      {
-        dragStartCellId,
-        selectedCells,
-        selectedCellsRef,
-        cells,
-        activeCell,
-      },
-      "all this in mouse up"
-    );
     if (!dragStartCellId) return;
     const updatedSelectedCells = selectedCellsRef.current; // Get the latest selectedCells
 
@@ -222,8 +204,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
         fillValues[cellId] = cells[dragStartCellId].value; // Copy-fill logic
       }
     });
-
-    console.log(fillValues, "fillValues after ");
 
     dispatch({
       type: "AUTO_FILL",
@@ -244,8 +224,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
     setDragStartCell(cellId);
     setIsAutoFill(true);
     document.body.style.userSelect = "none";
-
-    console.log("hello selected over drag ", cellId, selectedCells);
 
     const onMouseUp = () => handleMouseUpFromCell(cellId);
 
