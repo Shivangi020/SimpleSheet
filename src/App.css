@@ -68,10 +68,11 @@ td:hover {
   height: 100%;
   position: relative;
   font-weight: 600;
-  font-size: 0.8em;
+  font-size: 0.9em;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-transform: uppercase;
 }
 
 .resizer {

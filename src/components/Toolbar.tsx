@@ -24,6 +24,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   const { state, dispatch } = useGrid();
   const { activeCell, cells } = state;
   const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   const handleDownload = async () => {
     if (isExporting) return;
@@ -38,22 +39,28 @@ const Toolbar: React.FC<ToolbarProps> = ({
   };
 
   const handleCSVFileImport = async () => {
+    setIsImporting(true);
     const fileInput = document.getElementById("attachment");
     fileInput?.click();
   };
 
   const handleInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const toUpload = await handleFileUpload(event);
-    const data = loadDataIntoApp(toUpload);
-    console.log(data);
-
-    dispatch({
-      type: "MULTI_UPDATE",
-      payload: {
-        updates: data,
-      },
-    });
+    try {
+      const toUpload = await handleFileUpload(event);
+      const data = loadDataIntoApp(toUpload);
+      dispatch({
+        type: "MULTI_UPDATE",
+        payload: {
+          updates: data,
+        },
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsImporting(false);
+    }
   };
+
   return (
     <div className="toolbarCn">
       <div className="toolbar">
@@ -120,15 +127,17 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
       <div className="toolbar2">
         <button className="toolbarBtn actionBtn" onClick={handleDownload}>
-          <CiExport size={20} />
+          <CiExport size={20} strokeWidth={1} />
           <span style={{ fontWeight: "400" }}>
             {isExporting ? "Exporting..." : "Export"}
           </span>
         </button>
 
         <button className="toolbarBtn actionBtn" onClick={handleCSVFileImport}>
-          <CiImport size={20} />
-          <span style={{ fontWeight: "400" }}>Import</span>
+          <CiImport size={20} strokeWidth={1} />
+          <span style={{ fontWeight: "400" }}>
+            {isImporting ? "Importing..." : "Import"}
+          </span>
         </button>
         <input
           type="file"

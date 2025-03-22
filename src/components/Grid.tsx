@@ -290,11 +290,11 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
       <table className="grid">
         <thead>
           <tr>
-            <th className="emptyCorner"></th> {/* Top-left corner empty */}
+            <th className="emptyCorner"></th>
             {columnWidths.map((width, colIdx) => (
               <th key={colIdx} style={{ width }} className="header">
                 <div className="headerCell">
-                  <span>Column {colIdx}</span>
+                  <span>{String.fromCharCode(colIdx + 97)}</span>
                   <span
                     onClick={(e) => {
                       e.stopPropagation();
@@ -308,7 +308,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
                       <TiArrowSortedUp size={18} />
                     )}
                   </span>
-
                   <div
                     className="resizer"
                     onMouseDown={(e) => handleMouseDown(colIdx, e)}
@@ -324,7 +323,6 @@ const Grid: React.FC<GridProps> = ({ rows, columns }) => {
               <td className="sticky-col">{rowIdx}</td>
               {Array.from({ length: columns }).map((_, colIdx) => {
                 const key = getCellKey(rowIdx, colIdx);
-
                 return (
                   <td
                     onClick={(e) => {
