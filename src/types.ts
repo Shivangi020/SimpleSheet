@@ -13,6 +13,12 @@ export interface GridState {
   sortState: "asc" | "desc";
 }
 
+Array<{
+  cellId: string;
+  value: string | number;
+  previousValue: string | number;
+}>;
+
 export type GridAction =
   | {
       type: "UPDATE_CELL";

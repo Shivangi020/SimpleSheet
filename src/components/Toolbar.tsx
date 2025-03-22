@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { ToolbarProps } from "../types";
 import { MdUndo } from "react-icons/md";
 import { MdRedo } from "react-icons/md";
 import { AiOutlineSortAscending } from "react-icons/ai";
 import { AiOutlineSortDescending } from "react-icons/ai";
+import { CiExport } from "react-icons/ci";
+import { CiImport } from "react-icons/ci";
 import { useGrid } from "../ GridContext";
-import { parseCellKey } from "../utils";
+import {
+  downloadCSV,
+  handleFileUpload,
+  loadDataIntoApp,
+  parseCellKey,
+} from "../utils";
 
 const Toolbar: React.FC<ToolbarProps> = ({
   canUndo,
@@ -14,9 +21,39 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onRedo,
   onSort,
 }) => {
-  const { state } = useGrid();
+  const { state, dispatch } = useGrid();
   const { activeCell, cells } = state;
+  const [isExporting, setIsExporting] = useState(false);
 
+  const handleDownload = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+    try {
+      await downloadCSV(cells);
+    } catch (error) {
+      console.error("Error during CSV download:", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleCSVFileImport = async () => {
+    const fileInput = document.getElementById("attachment");
+    fileInput?.click();
+  };
+
+  const handleInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const toUpload = await handleFileUpload(event);
+    const data = loadDataIntoApp(toUpload);
+    console.log(data);
+
+    dispatch({
+      type: "MULTI_UPDATE",
+      payload: {
+        updates: data,
+      },
+    });
+  };
   return (
     <div className="toolbarCn">
       <div className="toolbar">
@@ -79,6 +116,27 @@ const Toolbar: React.FC<ToolbarProps> = ({
             <div className="placeholder">Selected cell</div>
           )}
         </div>
+      </div>
+
+      <div className="toolbar2">
+        <button className="toolbarBtn actionBtn" onClick={handleDownload}>
+          <CiExport size={20} />
+          <span style={{ fontWeight: "400" }}>
+            {isExporting ? "Exporting..." : "Export"}
+          </span>
+        </button>
+
+        <button className="toolbarBtn actionBtn" onClick={handleCSVFileImport}>
+          <CiImport size={20} />
+          <span style={{ fontWeight: "400" }}>Import</span>
+        </button>
+        <input
+          type="file"
+          id="attachment"
+          style={{ display: "none" }}
+          accept=".csv"
+          onChange={(e) => handleInput(e)}
+        />
       </div>
     </div>
   );
