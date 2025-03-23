@@ -1,32 +1,29 @@
-# React Vite TypeScript App
 
-This is a React application built with Vite and TypeScript for fast development and optimized performance.
+# SimpleSheet 📝
 
-## Features
-- ⚡ Fast bundling with Vite
-- 🏗️ Modern React setup with TypeScript
-- 🎨 Tailwind CSS (optional)
-- 🔧 ESLint & Prettier configured
+A minimal spreadsheet-like grid built with React and TypeScript. This project was created as a learning exercise while exploring TypeScript.
 
-### SpreadSheet Features
-- 📏 Minimum 20x20 grid cells
-- ↔️ Adjustable column width by dragging borders
-- 📌 Sticky first row and first column while scrolling
-- 🔲 Supports selecting individual and multiple cells
-- 📋 Copy/Paste functionality via Clipboard API
-- 🔄 Undo/Redo for cell changes 
-- ⬆️⬇️ Column sorting  
-- 🖱️ Click and drag to auto-fill content to adjacent cells
+## ✨ Features
+- Basic grid layout with editable cells
+- Adjustable column width by dragging borders
+- Click and drag selection
+- Supports selecting individual and multiple cells
+- Simple copy-paste functionality
+- Undo/Redo support
+- Click and drag to auto-fill content to adjacent cells
+- Sorting columns 
+- **CSV import/export support** 📂
+- Minimal and lightweight design
 
-## Installation
+## 🚀 Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-username/your-repo.git
+   git clone https://github.com/Shivangi020/SimpleSheet.git
    cd your-repo
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
    ```sh
    npm install
    # or
@@ -35,39 +32,46 @@ This is a React application built with Vite and TypeScript for fast development 
    pnpm install
    ```
 
-## Development
+3. **Run the development server:**
+   ```sh
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   ```
 
-Run the development server:
-```sh
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+     The app will be available at `http://localhost:5173/` 
 
-The app will be available at `http://localhost:5173/` (default Vite port).
-
-## Build for Production
-
-```sh
-npm run build
-# or
-yarn build
-# or
-pnpm build
-```
+4. **Build for Production**
+   ```sh
+   npm run build
+   # or
+   yarn build
+   # or
+   pnpm build
+   ```
 
 The optimized build will be in the `dist/` folder.
 
-## Dependencies
-
+## 🛠 Dependencies
 - React
 - Vite
 - TypeScript
 - React-icons
+  
 
-## License
-
+## 📌 Future Improvements
+- **Advanced formulas & calculations** ➝ Support basic arithmetic operations (`SUM`, `AVG`, `COUNT`, etc.) and custom formulas.  
+- **Multi-cell formatting** ➝ Allow users to apply bold, italic, text alignment, background colors, and conditional formatting.  
+- **Cloud storage integration** ➝ Sync spreadsheets with cloud storage (Firebase, Supabase, or local storage).  
+- **Row & column resizing** ➝ Let users manually adjust row heights and column widths.  
+- **Cell merging** ➝ Implement the ability to merge and unmerge cells.  
+- **Keyboard shortcuts** ➝ Add common shortcuts`Ctrl + Z`, and `Tab` navigation.  
+- **Dark mode support** ➝ Provide a toggle for light and dark themes.  
+- **CSV & Excel improvements** ➝ Enhance import/export to better handle formatting and large datasets.  
+- **Performance optimizations** ➝ Optimize rendering for large spreadsheets with virtualization.
+  
+## 📜License
 This project is licensed under the [MIT License](LICENSE).
 
