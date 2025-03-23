@@ -13,6 +13,7 @@ import {
   loadDataIntoApp,
   parseCellKey,
 } from "../utils";
+import ActiveInput from "./ActiveInput";
 
 const Toolbar: React.FC<ToolbarProps> = ({
   canUndo,
@@ -44,7 +45,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
     fileInput?.click();
   };
 
-  const handleInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInput = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     try {
       const toUpload = await handleFileUpload(event);
       const data = loadDataIntoApp(toUpload);
@@ -58,6 +61,25 @@ const Toolbar: React.FC<ToolbarProps> = ({
       console.log(e);
     } finally {
       setIsImporting(false);
+    }
+  };
+
+  const handleCellValueUpdate = (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (activeCell) {
+      const cellId = activeCell;
+      const target = e.target as HTMLInputElement;
+      dispatch({
+        type: "UPDATE_CELL",
+        payload: {
+          cellId: cellId,
+          value: target.value,
+          previousValue: cells[cellId]?.value || "",
+        },
+      });
     }
   };
 
@@ -117,7 +139,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
               <span>{`Row-${parseCellKey(activeCell)?.row}`}</span>
               <span>{`Col-${parseCellKey(activeCell)?.col}`}</span>
               <hr className="verticalDivider" />
-              <span className="value">{cells[activeCell]?.value || ""}</span>
+              <span className="value">
+                <ActiveInput
+                  value={cells[activeCell]?.value || ""}
+                  handleCellValueUpdate={handleCellValueUpdate}
+                />
+              </span>
             </>
           ) : (
             <div className="placeholder">Selected cell</div>
@@ -144,7 +171,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           id="attachment"
           style={{ display: "none" }}
           accept=".csv"
-          onChange={(e) => handleInput(e)}
+          onChange={(e) => handleFileInput(e)}
         />
       </div>
     </div>

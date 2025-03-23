@@ -147,7 +147,7 @@ td:hover {
 
 .toolbar2 {
   width: fit-content;
-  min-width: 20%;
+  min-width: 15%;
   height: 60px;
   border-radius: 50px;
   background-color: #e6f2ff;
@@ -229,7 +229,11 @@ td:hover {
   text-align: start;
   color: #627588;
 }
-
+.activeCellInput {
+  width: 100%;
+  border: none;
+  outline: none;
+}
 .placeholder {
   color: #555;
   font-weight: 300;
